@@ -1,0 +1,29 @@
+{
+  "name": "code-design",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "@vue/shared": "^3.2.45",
+    "axios": "^1.2.3",
+    "element-plus": "^2.2.28",
+    "monaco-editor": "^0.34.1",
+    "pinia": "^2.0.29",
+    "vue": "^3.2.45",
+    "vue-axios": "^3.5.2"
+  },
+  "devDependencies": {
+    "@locator/runtime": "^0.2.4",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "unplugin-auto-import": "^0.11.5",
+    "unplugin-vue-components": "^0.22.12",
+    "vite": "^4.0.4",
+    "vite-plugin-compression": "^0.3.6"
+  }
+}
