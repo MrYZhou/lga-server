@@ -62,3 +62,4 @@ class Init:
         initHttp(app)
         initRouter(app)
         initStaticDir(app)
+        initDataBase()
