@@ -18,7 +18,7 @@ export default defineConfig({
         hmr: true,
         proxy: {
             '/api': {
-                target: 'http://localhost:8088/',  //你要跨域访问的网址
+                target: 'http://127.0.0.1:8000/',  //你要跨域访问的网址
                 changeOrigin: true,   // 允许跨域
                 rewrite: (path) => path.replace(/^\/api/, '') // 重写路径把路径变成空字符
             }
@@ -61,7 +61,7 @@ export default defineConfig({
     // 配置路径别名
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'),
+            '@': path.resolve(__dirname, './src'),
         },
     },
     css: {
