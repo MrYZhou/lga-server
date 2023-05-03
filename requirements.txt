@@ -8,3 +8,4 @@ nanoid
 pymysql
 python-dotenv
 isort
+apscheduler

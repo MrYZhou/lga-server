@@ -8,6 +8,7 @@ from sqlmodel import SQLModel, create_engine
 from db import engine
 from util.base import routeList
 
+from util.task import Task
 
 # 路由注册
 def initRouter(app: FastAPI):
