@@ -1,11 +1,6 @@
 # 初始化数据库
 from apscheduler.triggers.interval import IntervalTrigger
-from sqlmodel import SQLModel
-
-from db import engine
-
 from fastapi import APIRouter, HTTPException
-from nanoid import generate
 
 from util.task import scheduler
 
