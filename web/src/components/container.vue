@@ -13,13 +13,13 @@
         </el-row>
         <el-dialog v-model="dialogFormVisible" title="task config">
             <el-form :model="form" style="">
-                <el-form-item :label-width="'120px'" label="Promotion name">
-                    <el-input v-model="form.name" autocomplete="off"/>
+                <el-form-item :label-width="'120px'" label="任务名">
+                    <el-input v-model="form.name" autocomplete="off" class="ml20"/>
                 </el-form-item>
-                <el-form-item :label-width="'120px'" label="Zones">
-                    <el-select v-model="form.type" placeholder="Please select a zone">
-                        <el-option label="Zone No.1" value="shanghai"/>
-                        <el-option label="Zone No.2" value="beijing"/>
+                <el-form-item :label-width="'120px'" label="任务类型">
+                    <el-select v-model="form.type" class="ml20 w100" placeholder="Please select a zone">
+                        <el-option label="普通" value="t1"/>
+                        <el-option label="消息" value="t2"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item :label-width="'120px'" label="脚本内容" style="height: 300px">
