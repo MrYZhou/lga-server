@@ -1,58 +1,85 @@
 import importlib
 import os
+import sys
 
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from sqlmodel import SQLModel, create_engine
-from db import engine
-from util.base import routeList
+from walrus import RateLimitException
 
-from util.task import Task
+from fastapi.responses import JSONResponse
 
-# 路由注册
-def initRouter(app: FastAPI):
-    # 解析规则:放在router模块下面的文件
-    for root, dirs, files in os.walk(os.path.join(os.getcwd(), "router")):
-        for file in files:
-            if file.find("__init__") > -1 or file.find(".pyc") > -1:
-                continue
+from util.PPAFastAPI import PPAFastAPI
+
+
+class Env:
+    AppName = "lga"
+    # 路由注册
+    def initRouter(app: FastAPI):
+        # 是否为已打包环境
+        if getattr(sys, "frozen", False):
+            base_path = os.path.join(sys._MEIPASS, "router")
+        else:
+            base_path = os.path.join(os.getcwd(), "router")
+
+        # 获取当前目录下所有非目录项（即文件）
+        files_in_current_dir = [
+            f
+            for f in os.listdir(base_path)
+            if os.path.isfile(os.path.join(base_path, f))
+        ]
+
+        # 解析规则:放在router模块下面的文件 (文件夹下文件)
+        for file in files_in_current_dir:
             file = file.replace(".py", "")
-            m = importlib.import_module('router.' + file)
+            if file in ["__init__", ".pyc"]:
+                continue
+            m = importlib.import_module("router." + file)
             app.include_router(m.router)
 
-    # 解析规则:在模板里面手动注册的方式,需要自行导包
-    for route in routeList:
-        app.include_router(route)
+    def initHttp(app: FastAPI):
+        # 资源访问
+        origins = [
+            "http://localhost",
+        ]
 
+        # 限流处理器
+        @app.exception_handler(RateLimitException)
+        async def handle(request: Request, exc: RateLimitException):
+            msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
+            return JSONResponse(status_code=412, content=msg)
 
-def initHttp(app: FastAPI):
-    # 资源访问
-    origins = [
-        "http://localhost",
-        "http://127.0.0.1:5173",
-    ]
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
+    def initDataBase(app):
+        PPAFastAPI.init_app(app)
+        PPAFastAPI.showSql(True)
 
-def initDataBase():
-    SQLModel.metadata.create_all(engine)
+    def initStaticDir(app):
+        path = Env.getPath("resources")
+        app.mount("/static", StaticFiles(directory=path), name="static")
 
+    def initEnv():
+        Env.getPath("resources")
 
-def initStaticDir(app):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-class Init:
     @staticmethod
-    def do(app: FastAPI):
-        initHttp(app)
-        initRouter(app)
-        initStaticDir(app)
-        initDataBase()
+    def init(app: FastAPI):
+        Env.initEnv()
+        Env.initDataBase(app)
+        Env.initHttp(app)
+        Env.initRouter(app)
+        Env.initStaticDir(app)
+
+    def getPath(*path):
+        path = os.path.join(os.path.expanduser("~"), Env.AppName, *path)
+        if not os.path.exists(path):
+            os.makedirs(
+                os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
+            )
+        return path

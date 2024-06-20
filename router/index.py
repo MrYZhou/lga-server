@@ -42,6 +42,8 @@ async def add_task(task_name: str, type: str):
         task_function = getattr(TaskInfo, "my_job2")
         # 动态添加任务到调度器
         scheduler.add_job(func=task_function, id=job_id, trigger=trigger)
-        return {"message": f"Task '{task_name}' added successfully with trigger '{trigger}'"}
+        return {
+            "message": f"Task '{task_name}' added successfully with trigger '{trigger}'"
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e.detail))

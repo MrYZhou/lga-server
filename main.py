@@ -1,16 +1,18 @@
 import uvicorn
 from fastapi import FastAPI
+from util.response import AppResult
 
-from util.system import Init
+from util.system import Env
+
 
 app = FastAPI()
-Init.do(app)
+Env.init(app)
 
 
 @app.get("/")
 async def index():
-    return "index1"
+    return AppResult.success("lga server")
 
 
-if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True, workers=1)
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, workers=1)
