@@ -31,7 +31,7 @@ services:
       TZ: Asia/Shanghai
     networks:
       app-net:
-  #前端
+  #前端直接使用线上的
   web:
     container_name: larryane/gencode
     ports:
