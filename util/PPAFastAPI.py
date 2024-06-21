@@ -9,7 +9,7 @@ class PPAFastAPI(PPA):
 
     # 集成主要就是注册对应框架的开启和结束的生命周期
     @classmethod
-    def init_app(cls, app: FastAPI, *args):
+    def init(cls, app: FastAPI, *args):
         if cls._instance is None:
             load_dotenv()
             default_values = {

@@ -10,13 +10,15 @@ from walrus import RateLimitException
 from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
+from util.scheduler import Scheduler
 
 
 class Env:
     AppName = "lga"
+
     # 路由注册
     def initRouter(app: FastAPI):
-        # 是否为已打包环境
+        # 是否为打包环境
         if getattr(sys, "frozen", False):
             base_path = os.path.join(sys._MEIPASS, "router")
         else:
@@ -58,23 +60,23 @@ class Env:
         )
 
     def initDataBase(app):
-        PPAFastAPI.init_app(app)
+        PPAFastAPI.init(app)
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app):
         path = Env.getPath("resources")
         app.mount("/static", StaticFiles(directory=path), name="static")
 
-    def initEnv():
-        Env.getPath("resources")
+    def initSchedule(app):
+        Scheduler.init(app)
 
     @staticmethod
     def init(app: FastAPI):
-        Env.initEnv()
         Env.initDataBase(app)
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
+        Env.initSchedule(app)
 
     def getPath(*path):
         path = os.path.join(os.path.expanduser("~"), Env.AppName, *path)
