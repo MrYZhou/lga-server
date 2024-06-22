@@ -19,6 +19,6 @@ f5
 
 ```bash
 docker build -t fastweb .
-docker run -d -p 8000:8000 -e  DB_HOST="192.168.1.4" -m 80m fastweb
+docker run -d -p 8000:8000 -e  DB_HOST="192.168.1.4"  fastweb
 ```
 
