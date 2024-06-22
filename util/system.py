@@ -2,12 +2,10 @@ import importlib
 import os
 import sys
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from walrus import RateLimitException
 
-from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
 from util.scheduler import Scheduler
@@ -16,7 +14,6 @@ from util.scheduler import Scheduler
 class Env:
     AppName = "lga"
 
-    # 路由注册
     def initRouter(app: FastAPI):
         # 是否为打包环境
         if getattr(sys, "frozen", False):
@@ -31,7 +28,7 @@ class Env:
             if os.path.isfile(os.path.join(base_path, f))
         ]
 
-        # 解析规则:放在router模块下面的文件 (文件夹下文件)
+        # 解析规则:放在router文件夹下面的文件
         for file in files_in_current_dir:
             file = file.replace(".py", "")
             if file in ["__init__", ".pyc"]:
@@ -45,12 +42,6 @@ class Env:
             "http://localhost",
         ]
 
-        # 限流处理器
-        @app.exception_handler(RateLimitException)
-        async def handle(request: Request, exc: RateLimitException):
-            msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
-            return JSONResponse(status_code=412, content=msg)
-
         app.add_middleware(
             CORSMiddleware,
             allow_origins=origins,
@@ -59,15 +50,15 @@ class Env:
             allow_headers=["*"],
         )
 
-    def initDataBase(app):
+    def initDataBase(app: FastAPI):
         PPAFastAPI.init(app)
         PPAFastAPI.showSql(True)
 
-    def initStaticDir(app):
+    def initStaticDir(app: FastAPI):
         path = Env.getPath("resources")
         app.mount("/static", StaticFiles(directory=path), name="static")
 
-    def initSchedule(app):
+    def initSchedule(app: FastAPI):
         Scheduler.init(app)
 
     @staticmethod
