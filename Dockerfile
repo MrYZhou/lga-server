@@ -7,17 +7,15 @@ WORKDIR /app
 COPY . /app
 
 # pip换源,更新依赖
-RUN pip config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple/
-RUN pip install --upgrade  pip
-
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 # 使用Poetry国内源和不创建虚拟环境
 RUN pip install poetry 
-RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://pypi.mirrors.ustc.edu.cn/simple/ 
+RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://mirrors.aliyun.com/pypi/simple/ 
 # 使用Poetry安装生产依赖项
-RUN poetry update --only main
+RUN poetry install --only main
 
-# 声明运行时环境变量
-ENV PYTHONPATH = /app
+# 声明运行时环境变量,服务的主机地址
+ENV DB_HOST="192.168.1.4"
 
 # 指定启动命令
 CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888"]
