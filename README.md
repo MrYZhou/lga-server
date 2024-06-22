@@ -1,37 +1,24 @@
-# fastapi-le
+# lga-server
 
-fastapi document
-[https://fastapi.tiangolo.com/zh/tutorial/first-steps/](https://fastapi.tiangolo.com/zh/tutorial/first-steps/)
-
-jinja2 document
-[http://docs.jinkan.org/docs/jinja2/index.html](http://docs.jinkan.org/docs/jinja2/index.html)
+任务调度服务
 
 ## step:
-1.install pacakge
+1.依赖安装
 
 ```bash
 poetry update
 ```
 
-2.start app
+2.启动服务
 
 ```bash
 f5
 ```
 
-
-
-## build app
-
-```bash
-docker-compose up -d
-```
-
-if you want build a docker image,you can use dockerfile.
-such as
+## docker运行
 
 ```bash
 docker build -t fastweb .
-docker run -d -p 8000:8000 -e  DB_HOST="192.168.1.4" -m 30m fastweb
+docker run -d -p 8000:8000 -e  DB_HOST="192.168.1.4" -m 80m fastweb
 ```
 
