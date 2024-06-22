@@ -55,4 +55,4 @@ class Scheduler:
 
     @classmethod
     async def shutdown(cls):
-        await cls.scheduler.shutdown()
+        cls.scheduler.shutdown()
