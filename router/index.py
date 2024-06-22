@@ -11,6 +11,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 @router.get("/add")
 async def add_task(task_name: str, type: str):
     try:
@@ -21,6 +22,7 @@ async def add_task(task_name: str, type: str):
         return AppResult.success("添加成功")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e.detail))
+
 
 @router.get("/delete")
 async def delete_task(job_id: str):
