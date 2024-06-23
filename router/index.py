@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post("/add", description="创建新任务")
 @exception
-async def add_task(data: TaskInfo) -> AppResult:
+async def add_task(data: TaskInfo):
     # 任务存数据库
     data.id = Common.uuid()
     await TaskInfo.post(data)
