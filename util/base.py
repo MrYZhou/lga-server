@@ -4,15 +4,6 @@ import re
 import string
 import zipfile
 
-from fastapi import APIRouter
-
-routeList = []
-
-
-def registe(router: APIRouter):
-    routeList.append(router)
-
-
 class Common:
     @staticmethod
     def _name_convert_to_camel(name: str) -> str:
@@ -71,37 +62,3 @@ class Common:
             print("This is not zip")
             return False
         return True
-
-
-class App:
-    def __init__(self):
-        self.je = jinjaEngine
-
-
-# 通用常量
-mapKey = {
-    "java": {
-        "list": [
-            "Info.java",
-            "Query.java",
-            "Controller.java",
-            "Entity.java",
-            "Model.xml",
-            "Mapper.java",
-            "Service.java",
-            "ServiceImpl.java",
-        ]
-    },
-    "mobile": {
-        "list": [
-            "/index.vue",
-            "/form.vue",
-        ]
-    },
-    "web": {
-        "list": [
-            "/index.vue",
-            "/form.vue",
-        ]
-    },
-}

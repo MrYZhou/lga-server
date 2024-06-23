@@ -5,8 +5,6 @@ from laorm import PPA
 
 class PPAFastAPI(PPA):
     _instance = None
-
-    # 集成主要就是注册对应框架的开启和结束的生命周期
     @classmethod
     def init(cls, app: FastAPI, *args):
         if cls._instance is None:
