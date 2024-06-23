@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from laorm import PPA
 
@@ -11,7 +10,6 @@ class PPAFastAPI(PPA):
     @classmethod
     def init(cls, app: FastAPI, *args):
         if cls._instance is None:
-            load_dotenv()
             default_values = {
                 "host": os.getenv("DB_HOST", "127.0.0.1"),
                 "port": int(os.getenv("DB_PORT", 3306)),

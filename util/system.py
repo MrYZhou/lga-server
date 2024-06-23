@@ -2,6 +2,7 @@ import importlib
 import os
 import sys
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -12,6 +13,7 @@ from util.scheduler import Scheduler
 
 
 class Env:
+    app : FastAPI
     AppName = "lga"
 
     def initRouter(app: FastAPI):
@@ -61,13 +63,19 @@ class Env:
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
 
-    @staticmethod
-    def init(app: FastAPI):
+    def init() -> FastAPI:
+        load_dotenv()
+        if os.getenv("MODE") == 'production':
+            app = FastAPI(docs_url=None, redoc_url=None)
+        else:
+            app = FastAPI()
         Env.initDataBase(app)
+        Env.initSchedule(app)
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
-        Env.initSchedule(app)
+        Env.app = app    
+        return app
 
     def getPath(*path):
         path = os.path.join(os.path.expanduser("~"), Env.AppName, *path)
