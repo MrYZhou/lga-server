@@ -1,9 +1,7 @@
 import os
-import random
 import re
-import string
 import zipfile
-
+import nanoid
 class Common:
     @staticmethod
     def _name_convert_to_camel(name: str) -> str:
@@ -20,8 +18,9 @@ class Common:
         return name.lower()
 
     @staticmethod
-    def randomkey(len: int = 10):
-        return "".join(random.sample(string.ascii_letters + string.digits, len))
+    def uuid(size: int = 10):
+        return nanoid.generate('123456789',size=size)
+    
 
     @staticmethod
     def zipfile(src_dir, save_name="default"):

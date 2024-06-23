@@ -17,7 +17,7 @@ router = APIRouter(
 @exception
 async def add_task(data: TaskInfo) -> AppResult:
     # 任务存数据库
-    data.id = Common.randomkey()
+    data.id = Common.uuid()
     await TaskInfo.post(data)
     # 生成脚本到task文件夹
     # 启用任务
