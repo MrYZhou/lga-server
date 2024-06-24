@@ -1,1 +1,5 @@
-
+.git
+.ruff_cache
+.vscode
+build
+init.sql

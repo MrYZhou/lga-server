@@ -63,11 +63,13 @@ class Env:
         load_dotenv()
         
         # 是否为打包环境
-        if os.getenv("MODE") == "production" or getattr(sys, "frozen", False):
+        if os.getenv("MODE") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
-            Env.serverPath = os.path.join(sys._MEIPASS, "server")
         else:
             app = FastAPI()        
+        if getattr(sys, "frozen", False):
+            Env.serverPath = os.path.join(sys._MEIPASS, "server")
+        else:
             Env.serverPath = os.path.join(os.getcwd(), "server")
         Env.initDataBase(app)
         Env.initSchedule(app)
