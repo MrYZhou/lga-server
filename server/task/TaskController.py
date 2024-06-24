@@ -4,7 +4,7 @@ from util.response import AppResult
 from util.exception import exception
 from util.base import Common
 from util.scheduler import Scheduler
-from model.info import TaskInfo
+from .model.info import TaskInfo
 
 router = APIRouter(
     prefix="/task",

@@ -8,7 +8,6 @@ from fastapi.responses import (
 )
 from util.base import Common
 
-from walrus import Database as RedisDatabase
 from laorm.stream import FieldDescriptor, sql, table
 from laorm.PPA import PPA
 
@@ -28,10 +27,6 @@ router = APIRouter(
     tags=["示例代码"],
     responses={404: {"description": "Not found"}},
 )
-
-
-db = RedisDatabase(host="localhost", port=6379)
-rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
 @table("config")
