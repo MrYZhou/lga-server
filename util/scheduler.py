@@ -51,6 +51,11 @@ class Scheduler:
         if cls.scheduler.state == 0:
             cls.scheduler.start()
         # 从数据库获取任务添加
+        # 时间触发器，判断时间是未来的
+        # if 'date' == 1:
+        #     target_time = datetime(2024, 6, 24, 9, 25, 50)
+        #     scheduler.add_job(task, 'date', run_date=target_time)
+
         # cls.scheduler.add_job()
 
     @classmethod
