@@ -17,6 +17,7 @@ class TaskInfo(BaseModel):
     status
     uid
     """
+
     id: str = FieldDescriptor(primary=True)
     task_name: str = FieldDescriptor()
     type: str = FieldDescriptor()

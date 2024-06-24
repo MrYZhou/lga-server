@@ -2,6 +2,8 @@ import os
 import re
 import zipfile
 import nanoid
+
+
 class Common:
     @staticmethod
     def _name_convert_to_camel(name: str) -> str:
@@ -19,8 +21,7 @@ class Common:
 
     @staticmethod
     def uuid(size: int = 10):
-        return nanoid.generate('123456789',size=size)
-    
+        return nanoid.generate("123456789", size=size)
 
     @staticmethod
     def zipfile(src_dir, save_name="default"):

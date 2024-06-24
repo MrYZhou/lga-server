@@ -20,6 +20,7 @@ class CustomException(Exception):
     def __init__(self, status_code: int, detail: str):
         self.status_code = status_code
         self.detail = detail
+
     async def custom_exception_middleware(request: Request, call_next):
         try:
             response = await call_next(request)

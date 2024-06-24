@@ -8,6 +8,8 @@ app = Env.init()
 async def index():
     return AppResult.success("lga server")
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8888)

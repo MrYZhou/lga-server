@@ -13,7 +13,7 @@ from util.scheduler import Scheduler
 
 
 class Env:
-    app : FastAPI
+    app: FastAPI
     AppName = "lga"
 
     def initRouter(app: FastAPI):
@@ -65,7 +65,7 @@ class Env:
 
     def init() -> FastAPI:
         load_dotenv()
-        if os.getenv("MODE") == 'production':
+        if os.getenv("MODE") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
         else:
             app = FastAPI()
@@ -74,7 +74,7 @@ class Env:
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
-        Env.app = app    
+        Env.app = app
         return app
 
     def getPath(*path):

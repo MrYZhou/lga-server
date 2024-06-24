@@ -5,6 +5,7 @@ from laorm import PPA
 
 class PPAFastAPI(PPA):
     _instance = None
+
     @classmethod
     def init(cls, app: FastAPI, *args):
         if cls._instance is None:
