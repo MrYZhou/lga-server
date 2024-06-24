@@ -2,7 +2,6 @@
 from fastapi import APIRouter
 from util.response import AppResult
 from util.exception import exception
-from model.task import TaskInfo
 
 router = APIRouter(
     prefix="/user",
@@ -13,5 +12,5 @@ router = APIRouter(
 
 @router.post("/add")
 @exception
-async def add_user(data: TaskInfo):
+async def add_user():
     return AppResult.success("添加成功")
