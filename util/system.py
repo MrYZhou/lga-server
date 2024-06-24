@@ -15,24 +15,13 @@ from util.scheduler import Scheduler
 
 class Env:
     app: FastAPI
-    AppName = "lga"
+    serverPath:str
+    AppName: str = "lga"
 
     def initRouter(app: FastAPI):
-        # 是否为打包环境
-        if getattr(sys, "frozen", False):
-            base_path = os.path.join(sys._MEIPASS, "server")
-        else:
-            base_path = os.path.join(os.getcwd(), "server")
-
-        # 获取当前目录下所有非目录项（即文件）
-        files_in_current_dir = [
-            f
-            for f in os.listdir(base_path)
-            if os.path.isfile(os.path.join(base_path, f))
-        ]
 
         # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
-        for path in Path("server").rglob("*.py"):  # 使用pathlib更方便地遍历文件
+        for path in Path(Env.serverPath).rglob("*.py"):  # 使用pathlib更方便地遍历文件
             if "controller" in path.name.lower():
                 module_name = path.stem  # 不包含扩展名的文件名
                 try:
@@ -43,7 +32,7 @@ class Env:
                     if hasattr(module, "router"):
                         app.include_router(module.router)
                 except ImportError as e:
-                    print(f"Failed to import {full_module_name}: {e}")
+                    print(f"导入模块失败: {full_module_name} : {e}")
 
     def initHttp(app: FastAPI):
         # 资源访问
@@ -72,10 +61,14 @@ class Env:
 
     def init() -> FastAPI:
         load_dotenv()
-        if os.getenv("MODE") == "production":
+        
+        # 是否为打包环境
+        if os.getenv("MODE") == "production" or getattr(sys, "frozen", False):
             app = FastAPI(docs_url=None, redoc_url=None)
+            Env.serverPath = os.path.join(sys._MEIPASS, "server")
         else:
-            app = FastAPI()
+            app = FastAPI()        
+            Env.serverPath = os.path.join(os.getcwd(), "server")
         Env.initDataBase(app)
         Env.initSchedule(app)
         Env.initHttp(app)
