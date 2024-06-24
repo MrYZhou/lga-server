@@ -7,10 +7,10 @@ WORKDIR /app
 COPY . /app
 
 # pip换源,更新依赖
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
 # 使用Poetry国内源和不创建虚拟环境
 RUN pip install poetry 
-RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://mirrors.aliyun.com/pypi/simple/ 
+RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://pypi.tuna.tsinghua.edu.cn/simple/
 # 使用Poetry安装生产依赖项
 RUN poetry install --only main
 
