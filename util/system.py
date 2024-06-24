@@ -1,5 +1,6 @@
 import importlib
 import os
+from pathlib import Path
 import sys
 
 from dotenv import load_dotenv
@@ -19,9 +20,9 @@ class Env:
     def initRouter(app: FastAPI):
         # 是否为打包环境
         if getattr(sys, "frozen", False):
-            base_path = os.path.join(sys._MEIPASS, "router")
+            base_path = os.path.join(sys._MEIPASS, "server")
         else:
-            base_path = os.path.join(os.getcwd(), "router")
+            base_path = os.path.join(os.getcwd(), "server")
 
         # 获取当前目录下所有非目录项（即文件）
         files_in_current_dir = [
@@ -30,13 +31,19 @@ class Env:
             if os.path.isfile(os.path.join(base_path, f))
         ]
 
-        # 解析规则:放在router文件夹下面的文件
-        for file in files_in_current_dir:
-            file = file.replace(".py", "")
-            if file in ["__init__", ".pyc"]:
-                continue
-            m = importlib.import_module("router." + file)
-            app.include_router(m.router)
+        # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
+        for path in Path("server").rglob("*.py"):  # 使用pathlib更方便地遍历文件
+            if "controller" in path.name.lower():
+                module_name = path.stem  # 不包含扩展名的文件名
+                try:
+                    # 动态导入模块
+                    full_module_name = f"server.{path.parent.name}.{module_name}"
+                    module = importlib.import_module(full_module_name)
+                    # 添加路由
+                    if hasattr(module, "router"):
+                        app.include_router(module.router)
+                except ImportError as e:
+                    print(f"Failed to import {full_module_name}: {e}")
 
     def initHttp(app: FastAPI):
         # 资源访问

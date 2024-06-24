@@ -10,7 +10,7 @@ params = [
     "--add-data=util;util",
     "--add-data=router;router",
     "--add-data=model;model",
-    "--add-data=task;task",
+    "--add-data=tasks;tasks",
     # 指定输出目录
     "--distpath=build",
     # 无需用户确认
