@@ -53,8 +53,9 @@ class Env:
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
-        path = Env.getPath("resources")
-        app.mount("/static", StaticFiles(directory=path), name="static")
+        Env.getPath("resources")
+        app.mount("/img", StaticFiles(directory="resources/img"))
+        app.mount("/template", StaticFiles(directory="resources/template"))
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)

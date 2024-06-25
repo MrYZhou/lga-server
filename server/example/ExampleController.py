@@ -212,29 +212,13 @@ async def zipfile():
 
 @router.get("/avator")
 def avator():
-    avator = "static/img"
-    # fileName不写会默认打开到这个图片页面
-    return FileResponse(avator, filename="beauty.jpg")
+    avator = "resources/img/1.webp"
+    # 预览图片
+    return FileResponse(avator)
+    # 下载图片
+    # return FileResponse(avator, filename="1.webp")
 
 
-# 列表去重
-def removeSame(data):
-    return list(set(data))
-
-
-@router.get("/renderStr")
-def renderStr():
-    template_str = """
-    <p>Hello, {{ name }}!
-    You have {{ num }} new messages.</p>
-    {{removeSame(arr)}}
-    """
-    data = {"name": "Larry", "num": 3}
-    template = Template(template_str)
-    template.globals["removeSame"] = removeSame
-    template.globals["arr"] = [1, 2, 3, 2]
-
-    return template.render(data)
 
 
 # 重定向
