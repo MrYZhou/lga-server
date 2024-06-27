@@ -1,6 +1,7 @@
 import importlib
 import inspect
 import os
+from typing import Self
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
@@ -9,7 +10,9 @@ from fastapi import FastAPI
 class Scheduler:
     _instance = None
     scheduler = None
-
+    @classmethod
+    def getInstance(cls)-> Self:
+        return cls._instance
     @classmethod
     def initAllTask(cls):
         """
@@ -33,10 +36,10 @@ class Scheduler:
             ## 如果有指定任务
             if updateTaskName and updateTaskName != name:
                 continue
-            job = cls.scheduler.get_job(name)
-            if job:
-                cls.scheduler.remove_job(name)
-            cls.scheduler.add_job(func=method, id=name, trigger="interval", seconds=1)
+            task = cls.scheduler.get_task(name)
+            if task:
+                cls.scheduler.remove_task(name)
+            cls.scheduler.add_task(func=method, id=name, trigger="interval", seconds=1)
 
     @classmethod
     def init(cls, app: FastAPI, *args, **kwargs):
