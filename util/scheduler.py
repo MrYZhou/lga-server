@@ -10,9 +10,11 @@ from fastapi import FastAPI
 class Scheduler:
     _instance = None
     scheduler = None
+
     @classmethod
-    def getInstance(cls)-> Self:
+    def getInstance(cls) -> Self:
         return cls._instance
+
     @classmethod
     def initAllTask(cls):
         """

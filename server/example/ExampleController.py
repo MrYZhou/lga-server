@@ -219,8 +219,6 @@ def avator():
     # return FileResponse(avator, filename="1.webp")
 
 
-
-
 # 重定向
 @router.get("/redirect")
 async def redirect(id):

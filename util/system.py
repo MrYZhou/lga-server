@@ -15,11 +15,10 @@ from util.scheduler import Scheduler
 
 class Env:
     app: FastAPI
-    serverPath:str
+    serverPath: str
     AppName: str = "lga"
 
     def initRouter(app: FastAPI):
-
         # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
         for path in Path(Env.serverPath).rglob("*.py"):  # 使用pathlib更方便地遍历文件
             if "controller" in path.name.lower():
@@ -31,7 +30,7 @@ class Env:
                     # 添加路由
                     if hasattr(module, "router"):
                         app.include_router(module.router)
-                except ImportError as e:
+                except Exception as e:
                     print(f"导入模块失败: {full_module_name} : {e}")
 
     def initHttp(app: FastAPI):
@@ -62,12 +61,12 @@ class Env:
 
     def init() -> FastAPI:
         load_dotenv()
-        
+
         # 是否为打包环境
         if os.getenv("MODE") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
         else:
-            app = FastAPI()        
+            app = FastAPI()
         if getattr(sys, "frozen", False):
             Env.serverPath = os.path.join(sys._MEIPASS, "server")
         else:

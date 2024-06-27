@@ -1,5 +1,5 @@
 # 初始化数据库
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from util.response import AppResult
 from util.exception import exception
 from util.base import Common
@@ -14,22 +14,26 @@ router = APIRouter(
 )
 
 schedule = Scheduler.getInstance()
+
+
 @router.post("/add")
 @exception
 async def add_task(data: TaskInfo):
     # 任务存数据库
     data.id = Common.uuid()
     await TaskInfo.post(data)
+
     # 生成脚本到task文件夹用户下文件
+
     # 启用任务
-    # Scheduler.initTask()
+    # schedule.initTask()
     return AppResult.success("添加成功")
 
 
 @router.get("/delete")
 @exception
 async def delete_task(task_id: str):
-    TaskInfo.delete(task_id)
+    await TaskInfo.delete(task_id)
     schedule.delete_task(task_id)
     return AppResult.success("删除成功")
 
@@ -47,12 +51,13 @@ async def update_task(data: TaskInfo):
 
 @router.post("/list")
 @exception
-async def list_task(data: TaskPage):
-    return AppResult.success("")
+async def list_task(page=Body(TaskPage)):
+    data = await TaskInfo.page(page)
+    return AppResult.success(data)
 
 
 @router.post("/get")
 @exception
 async def get_task(task_id: str):
-    task = TaskInfo.get(task_id)
+    task = await TaskInfo.get(task_id)
     return AppResult.success(task)
