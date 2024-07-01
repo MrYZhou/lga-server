@@ -15,12 +15,12 @@ from util.scheduler import Scheduler
 
 class Env:
     app: FastAPI
-    serverPath: str
+    rootPath: str
     AppName: str = "lga"
 
     def initRouter(app: FastAPI):
         # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
-        for path in Path(Env.serverPath).rglob("*.py"):  # 使用pathlib更方便地遍历文件
+        for path in Path(Env.rootPath+ "/server").rglob("*.py"):  # 使用pathlib更方便地遍历文件
             if "controller" in path.name.lower():
                 module_name = path.stem  # 不包含扩展名的文件名
                 try:
@@ -68,9 +68,9 @@ class Env:
         else:
             app = FastAPI()
         if getattr(sys, "frozen", False):
-            Env.serverPath = os.path.join(sys._MEIPASS, "server")
+            Env.rootPath = os.path.join(sys._MEIPASS)
         else:
-            Env.serverPath = os.path.join(os.getcwd(), "server")
+            Env.rootPath = os.path.join(os.getcwd())
         Env.initDataBase(app)
         Env.initSchedule(app)
         Env.initHttp(app)

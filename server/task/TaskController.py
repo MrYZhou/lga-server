@@ -4,6 +4,7 @@ from util.response import AppResult
 from util.exception import exception
 from util.base import Common
 from util.scheduler import Scheduler
+from util.system import Env
 from .model.info import TaskInfo
 from .model.page import TaskPage
 
@@ -21,12 +22,16 @@ schedule = Scheduler.getInstance()
 async def add_task(data: TaskInfo):
     # 任务存数据库
     data.id = Common.uuid()
-    await TaskInfo.post(data)
+    # await TaskInfo.post(data)
 
     # 生成脚本到task文件夹用户下文件
-
+    
+    taskPath = Env.rootPath + "/tasks"
+    with open(taskPath+'/larry.py', 'w+') as fout:
+        taskName = 'task'+data.id
+        fout.write(f'''def {taskName}():\n  {data.content}\n''')
     # 启用任务
-    # schedule.initTask()
+    # schedule.initTask('larry',taskName)
     return AppResult.success("添加成功")
 
 

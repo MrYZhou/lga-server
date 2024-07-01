@@ -31,6 +31,8 @@ class Scheduler:
     def initTask(cls, file, updateTaskName=None):
         """
         初始化指定任务
+        file 代表是文件名
+        updateTaskName 代表是任务名
         """
         m = importlib.import_module("task." + file)
         methods = inspect.getmembers(m, predicate=inspect.isfunction)
