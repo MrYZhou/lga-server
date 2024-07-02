@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import sys
 
+import aiofiles
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -58,6 +59,8 @@ class Env:
         app.mount("/template", StaticFiles(directory="resources/template"))
 
     def initSchedule(app: FastAPI):
+        # 文件生成
+        Env.createFile(Env.rootPath,"tasks",'larry.py')
         Scheduler.init(app)
 
     def init() -> FastAPI:
@@ -72,8 +75,7 @@ class Env:
             Env.rootPath = os.path.join(sys._MEIPASS)
         else:
             Env.rootPath = os.path.join(os.getcwd())
-        # 文件生成
-        Env.createFile(Env.rootPath,"tasks",'larry.py')
+        
         # 其他初始化    
         Env.initDataBase(app)
         Env.initSchedule(app)
@@ -90,9 +92,7 @@ class Env:
             os.makedirs(
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
-
-    def createFile(*path):
+    async def createFile(*path):
         filePath = os.path.join( *path)
-        if not os.path.exists(filePath):
-            with open(filePath, 'w'):        
-                pass
+        async with aiofiles.open(filePath, mode='w', encoding='utf-8') as file:
+            await file.write('')
