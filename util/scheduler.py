@@ -1,3 +1,4 @@
+import ast
 from datetime import datetime
 import importlib
 import inspect
@@ -80,21 +81,36 @@ class Scheduler:
     async def startup(cls):
         if cls.scheduler.state == 0:
             cls.scheduler.start()
-        # 从数据库获取任务添加
         # 时间触发器，判断时间是未来的
-        tasks = await TaskInfo.getList()
-        taskPath = os.path.join(os.getcwd()) + "/tasks"
-        for task in tasks:
-            with open(taskPath+'/larry.py', 'a+') as fout:
-                taskName = 'task'+task.get('id')
-                fout.write(f'''def {taskName}():\n  {task.get('content')}\n''')     
+        tasks = await TaskInfo.getList()   
         for task in tasks:
             type = task.get('type')
             if 'date' == type:
                 execute_time:datetime = task.get('execute_time')
-                taskName = 'task'+task.get('id')
-                cls.startTask('larry',taskName,type,execute_time)   
+                content = task.get('content')
+                method = cls.create_function_from_string(content)
+                cls.scheduler.add_job(func=method,trigger='date', args=[], run_date=execute_time)
+
 
     @classmethod
     async def shutdown(cls):
         cls.scheduler.shutdown()
+
+    def create_function_from_string(func_str):
+        # 将字符串转换为AST，然后编译为可执行代码
+        parsed_func = ast.parse(func_str, mode='exec')
+        # 确保字符串中只有一个顶级定义（比如函数定义）
+        if len(parsed_func.body) != 1 or not isinstance(parsed_func.body[0], ast.FunctionDef):
+            raise ValueError("Function string must contain exactly one function definition.")
+        
+        # 动态定义函数
+        func_def = parsed_func.body[0]
+        func_name = func_def.name
+        func_code = compile(parsed_func, '<string>', 'exec')
+        
+        # 执行代码以定义函数
+        namespace = {}
+        exec(func_code, namespace)
+        
+        # 返回定义的函数
+        return namespace[func_name]
