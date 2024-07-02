@@ -20,7 +20,7 @@ class Scheduler:
         """
         初始化所有任务
         """
-        for root, dirs, files in os.walk(os.path.join(os.getcwd(), "task")):
+        for root, dirs, files in os.walk(os.path.join(os.getcwd(), "tasks")):
             for file in files:
                 if file.find("__init__") > -1 or file.find(".pyc") > -1:
                     continue
@@ -34,16 +34,16 @@ class Scheduler:
         file 代表是文件名
         updateTaskName 代表是任务名
         """
-        m = importlib.import_module("task." + file)
+        m = importlib.import_module("tasks." + file)
         methods = inspect.getmembers(m, predicate=inspect.isfunction)
         for name, method in methods:
             ## 如果有指定任务
             if updateTaskName and updateTaskName != name:
                 continue
-            task = cls.scheduler.get_task(name)
+            task = cls.scheduler.get_job(name)
             if task:
-                cls.scheduler.remove_task(name)
-            cls.scheduler.add_task(func=method, id=name, trigger="interval", seconds=1)
+                cls.scheduler.remove_job(name)
+            cls.scheduler.add_job(func=method, id=name, trigger="interval", seconds=1)
 
     @classmethod
     def init(cls, app: FastAPI, *args, **kwargs):

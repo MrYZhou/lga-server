@@ -22,16 +22,14 @@ schedule = Scheduler.getInstance()
 async def add_task(data: TaskInfo):
     # 任务存数据库
     data.id = Common.uuid()
-    # await TaskInfo.post(data)
-
+    await TaskInfo.post(data)
     # 生成脚本到task文件夹用户下文件
-    
     taskPath = Env.rootPath + "/tasks"
-    with open(taskPath+'/larry.py', 'w+') as fout:
+    with open(taskPath+'/larry.py', 'a+') as fout:
         taskName = 'task'+data.id
         fout.write(f'''def {taskName}():\n  {data.content}\n''')
     # 启用任务
-    # schedule.initTask('larry',taskName)
+    schedule.initTask('larry',taskName)
     return AppResult.success("添加成功")
 
 
