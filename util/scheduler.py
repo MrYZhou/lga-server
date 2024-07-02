@@ -57,6 +57,7 @@ class Scheduler:
     def startup(cls):
         if cls.scheduler.state == 0:
             cls.scheduler.start()
+
         # 从数据库获取任务添加
         # 时间触发器，判断时间是未来的
         # if 'date' == 1:

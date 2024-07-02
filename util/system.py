@@ -52,7 +52,8 @@ class Env:
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
-        Env.getPath("resources")
+        Env.getPath(os.path.expanduser("~")+"/"+Env.AppName,"resources")
+        Env.getPath(Env.rootPath,"tasks")
         app.mount("/img", StaticFiles(directory="resources/img"))
         app.mount("/template", StaticFiles(directory="resources/template"))
 
@@ -60,8 +61,8 @@ class Env:
         Scheduler.init(app)
 
     def init() -> FastAPI:
+        # 加载.env文件和环境变量中的属性
         load_dotenv()
-
         # 是否为打包环境
         if os.getenv("MODE") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
@@ -71,6 +72,9 @@ class Env:
             Env.rootPath = os.path.join(sys._MEIPASS)
         else:
             Env.rootPath = os.path.join(os.getcwd())
+        # 文件生成
+        Env.createFile(Env.rootPath,"tasks",'larry.py')
+        # 其他初始化    
         Env.initDataBase(app)
         Env.initSchedule(app)
         Env.initHttp(app)
@@ -79,10 +83,16 @@ class Env:
         Env.app = app
         return app
 
-    def getPath(*path):
-        path = os.path.join(os.path.expanduser("~"), Env.AppName, *path)
+    def getPath(rootPath,*path):
+        # 用户目录
+        path = os.path.join(rootPath, *path)
         if not os.path.exists(path):
             os.makedirs(
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
-        return path
+
+    def createFile(*path):
+        filePath = os.path.join( *path)
+        if not os.path.exists(filePath):
+            with open(filePath, 'w'):        
+                pass
