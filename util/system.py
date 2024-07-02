@@ -61,7 +61,7 @@ class Env:
         Scheduler.init(app)
 
     def init() -> FastAPI:
-        # 加载.env文件和环境变量中的属性
+        # 加载.env文件属性到环境变量中
         load_dotenv()
         # 是否为打包环境
         if os.getenv("MODE") == "production":
