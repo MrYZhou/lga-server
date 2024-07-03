@@ -79,17 +79,20 @@ class Scheduler:
 
     @classmethod
     async def startup(cls):
-        if cls.scheduler.state == 0:
-            cls.scheduler.start()
         # 时间触发器，判断时间是未来的
         tasks = await TaskInfo.getList()   
         for task in tasks:
             type = task.get('type')
+            content = task.get('content')
             if 'date' == type:
                 execute_time:datetime = task.get('execute_time')
-                content = task.get('content')
+                current_time: datetime = datetime.now()
+                if execute_time < current_time:
+                    continue
                 method = cls.create_function_from_string(content)
                 cls.scheduler.add_job(func=method,trigger='date', args=[], run_date=execute_time)
+            if 'cron' == type:
+                cls.scheduler.add_job(func=method,trigger='cron', args=[], expression=content)
 
 
     @classmethod
