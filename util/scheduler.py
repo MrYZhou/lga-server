@@ -2,7 +2,7 @@ import ast
 from datetime import datetime
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
-
+from apscheduler.triggers.interval import IntervalTrigger
 from server.task.model.info import TaskInfo
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
@@ -24,14 +24,13 @@ class Scheduler:
 
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
-        # 时间触发器，判断时间是未来的
-        tasks = await TaskInfo.getList()
+        # 获取数据库任务
+        tasks = await TaskInfo.match('status','!=-1').match('status',' is not null').getList()
         for task in tasks:
             type = task.get("type")
             task_id = task.get("id")
-            content = task.get("content")
             task_name = task.get("task_name")
-            method = Scheduler.create_function_from_string(content)
+            method = Scheduler.create_function_from_string(task.get("content"))
             if "date" == type:
                 execute_time: datetime = task.get("execute_time")
                 current_time: datetime = datetime.now()
@@ -43,7 +42,7 @@ class Scheduler:
                         trigger=DateTrigger(run_date=execute_time),
                         args=[],
                     )
-            if "cron" == type:
+            elif "cron" == type:
                 job_args = Scheduler.parse_cron_expression(task.get("cron"))
                 scheduler.add_job(
                     id=task_id,
@@ -52,6 +51,15 @@ class Scheduler:
                     trigger=CronTrigger(**job_args),
                     args=[],
                 )
+            elif "interval" == type:
+                scheduler.add_job(
+                    id=task_id,
+                    name=task_name,
+                    func=method,
+                    trigger=IntervalTrigger(seconds=task.get("seconds")),
+                    args=[],
+                )
+
         scheduler.start()
 
     async def shutdown():
