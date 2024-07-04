@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 import sys
 
-import aiofiles
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -94,5 +93,6 @@ class Env:
             )
     def createFile(*path):
         filePath = os.path.join( *path)
-        with open(filePath, mode='w', encoding='utf-8') as file:
-             file.write('')
+        if not os.path.exists(filePath):
+            with open(filePath, mode='w', encoding='utf-8') as file:
+                file.write('')
