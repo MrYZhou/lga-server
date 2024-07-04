@@ -20,7 +20,9 @@ class Env:
 
     def initRouter(app: FastAPI):
         # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
-        for path in Path(Env.rootPath+ "/server").rglob("*.py"):  # 使用pathlib更方便地遍历文件
+        for path in Path(Env.rootPath + "/server").rglob(
+            "*.py"
+        ):  # 使用pathlib更方便地遍历文件
             if "controller" in path.name.lower():
                 module_name = path.stem  # 不包含扩展名的文件名
                 try:
@@ -52,21 +54,21 @@ class Env:
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
-        Env.getPath(os.path.expanduser("~")+"/"+Env.AppName,"resources")
-        Env.getPath(Env.rootPath,"tasks")
+        Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources")
+        Env.getPath(Env.rootPath, "tasks")
         app.mount("/img", StaticFiles(directory="resources/img"))
         app.mount("/template", StaticFiles(directory="resources/template"))
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
 
-    def init() -> FastAPI: 
+    def init() -> FastAPI:
         if getattr(sys, "frozen", False):
             Env.rootPath = os.path.join(sys._MEIPASS)
         else:
             Env.rootPath = os.path.join(os.getcwd())
         # 文件生成
-        Env.createFile(Env.rootPath,".env")
+        Env.createFile(Env.rootPath, ".env")
         # 加载.env文件属性到环境变量中
         load_dotenv()
         # 是否为打包环境
@@ -74,8 +76,8 @@ class Env:
             app = FastAPI(docs_url=None, redoc_url=None)
         else:
             app = FastAPI()
-        
-        # 其他初始化    
+
+        # 其他初始化
         Env.initDataBase(app)
         Env.initSchedule(app)
         Env.initHttp(app)
@@ -84,15 +86,16 @@ class Env:
         Env.app = app
         return app
 
-    def getPath(rootPath,*path):
+    def getPath(rootPath, *path):
         # 用户目录
         path = os.path.join(rootPath, *path)
         if not os.path.exists(path):
             os.makedirs(
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
+
     def createFile(*path):
-        filePath = os.path.join( *path)
+        filePath = os.path.join(*path)
         if not os.path.exists(filePath):
-            with open(filePath, mode='w', encoding='utf-8') as file:
-                file.write('')
+            with open(filePath, mode="w", encoding="utf-8") as file:
+                file.write("")
