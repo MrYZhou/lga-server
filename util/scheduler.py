@@ -25,7 +25,7 @@ class Scheduler:
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
         # 获取数据库任务
-        tasks = await TaskInfo.match('status','!=-1').match('status',' is not null').getList()
+        tasks = await TaskInfo.where(status='0').getList()
         for task in tasks:
             type = task.get("type")
             task_id = task.get("id")
