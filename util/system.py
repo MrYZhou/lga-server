@@ -59,11 +59,15 @@ class Env:
         app.mount("/template", StaticFiles(directory="resources/template"))
 
     def initSchedule(app: FastAPI):
-        # 文件生成
-        Env.createFile(Env.rootPath,"tasks",'larry.py')
         Scheduler.init(app)
 
-    def init() -> FastAPI:
+    def init() -> FastAPI: 
+        if getattr(sys, "frozen", False):
+            Env.rootPath = os.path.join(sys._MEIPASS)
+        else:
+            Env.rootPath = os.path.join(os.getcwd())
+        # 文件生成
+        Env.createFile(Env.rootPath,".env")
         # 加载.env文件属性到环境变量中
         load_dotenv()
         # 是否为打包环境
@@ -71,10 +75,6 @@ class Env:
             app = FastAPI(docs_url=None, redoc_url=None)
         else:
             app = FastAPI()
-        if getattr(sys, "frozen", False):
-            Env.rootPath = os.path.join(sys._MEIPASS)
-        else:
-            Env.rootPath = os.path.join(os.getcwd())
         
         # 其他初始化    
         Env.initDataBase(app)
@@ -92,7 +92,7 @@ class Env:
             os.makedirs(
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
-    async def createFile(*path):
+    def createFile(*path):
         filePath = os.path.join( *path)
-        async with aiofiles.open(filePath, mode='w', encoding='utf-8') as file:
-            await file.write('')
+        with open(filePath, mode='w', encoding='utf-8') as file:
+             file.write('')
