@@ -8,7 +8,7 @@ repository = "https://github.com/MrYZhou/lga.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11" # Python版本3.11起
+python = "^3.10" # Python版本3.11起
 fastapi = "^0.111.0" # Web框架
 uvicorn = {extras = ["standard"], version = "^0.27.1"}  # 应用服务器
 aiomysql = "^0.2.0"  # MySQL异步驱动
@@ -19,7 +19,7 @@ laorm = "^2.0.0" # orm库
 python-dotenv = "^1.0.1" #加载.env配置文件
 apscheduler = "^3.10.4" # 任务调度
 [tool.poetry.dev-dependencies]
-pyinstaller = {version = "^6.4.0", python = ">=3.10,<3.18"} # 打包exe
+pyinstaller = {version = "^6.4.0", python = ">=3.10,<3.13"} # 打包exe
 [build-system]
 requires = ["poetry-core>=1.8.2"]
 build-backend = "poetry.core.masonry.api"
