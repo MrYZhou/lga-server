@@ -1,4 +1,3 @@
-# 初始化数据库
 from fastapi import APIRouter, Body
 from util.response import AppResult
 from util.exception import exception
