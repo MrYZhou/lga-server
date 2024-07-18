@@ -1,9 +1,8 @@
 from laorm import FieldDescriptor, table
-from pydantic import BaseModel
 
 
 @table("task")
-class TaskInfo(BaseModel):
+class TaskInfo:
     """
     id \n
     task_name 任务名 \n
