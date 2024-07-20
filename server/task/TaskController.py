@@ -20,10 +20,10 @@ schedule = Scheduler.getInstance()
 async def add_task(data: TaskInfo):
     # 任务存数据库
     data.id = Common.uuid()
-    # 启用任务
-    Scheduler.add(data)
     await TaskInfo.post(data)
-    
+    task = await TaskInfo.get(data.id)
+     # 启用任务
+    Scheduler.add(task)
     return AppResult.success("添加成功")
 
 

@@ -25,7 +25,7 @@ class Scheduler:
         type = task.get("type")
         task_id = task.get("id")
         task_name = task.get("task_name")
-        content = task.content
+        content = task.get("content")
         method =  Scheduler.create_function_from_string(content) 
         if "date" == type:
             execute_time: datetime = task.get("execute_time")
