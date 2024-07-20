@@ -11,6 +11,7 @@ class TaskInfo:
     execute_time
     content
     description
+    seconds
     run_count
     last_run_times
     status
@@ -24,6 +25,7 @@ class TaskInfo:
     execute_time: str = FieldDescriptor()
     content: str = FieldDescriptor()
     description: str = FieldDescriptor()
+    seconds: int = FieldDescriptor()
     run_count: str = FieldDescriptor()
     last_run_times: int = FieldDescriptor()
     status: str = FieldDescriptor()

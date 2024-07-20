@@ -54,10 +54,10 @@ class Env:
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
-        Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources")
+        
         Env.getPath(Env.rootPath, "tasks")
-        app.mount("/img", StaticFiles(directory="resources/img"))
-        app.mount("/template", StaticFiles(directory="resources/template"))
+        app.mount("/img", StaticFiles(directory=Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources/img")))
+        app.mount("/template", StaticFiles(directory=Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources/template")))
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
@@ -93,6 +93,7 @@ class Env:
             os.makedirs(
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
+        return path    
 
     def createFile(*path):
         filePath = os.path.join(*path)

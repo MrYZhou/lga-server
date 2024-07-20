@@ -21,44 +21,47 @@ class Scheduler:
     def init(app: FastAPI, *args, **kwargs):
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
+    def add(task):
+        type = task.get("type")
+        task_id = task.get("id")
+        task_name = task.get("task_name")
+        content = task.content
+        method =  Scheduler.create_function_from_string(content) 
+        if "date" == type:
+            execute_time: datetime = task.get("execute_time")
+            current_time: datetime = datetime.now()
+            if execute_time > current_time:
+                Scheduler.scheduler.add_job(
+                    id=task_id,
+                    name=task_name,
+                    func=method,
+                    trigger=DateTrigger(run_date=execute_time),
+                    args=[],
+                )
+        elif "cron" == type:
+            job_args = Scheduler.parse_cron_expression(task.get("cron"))
+            Scheduler.scheduler.add_job(
+                id=task_id,
+                name=task_name,
+                func=method,
+                trigger=CronTrigger(**job_args),
+                args=[],
+            )
+        elif "interval" == type:
+            Scheduler.scheduler.add_job(
+                id=task_id,
+                name=task_name,
+                func=method,
+                trigger=IntervalTrigger(seconds=task.get("seconds")),
+                args=[],
+            )
 
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
         # 获取数据库任务
         tasks = await TaskInfo.where(status='0').getList()
         for task in tasks:
-            type = task.get("type")
-            task_id = task.get("id")
-            task_name = task.get("task_name")
-            method = Scheduler.create_function_from_string(task.get("content"))
-            if "date" == type:
-                execute_time: datetime = task.get("execute_time")
-                current_time: datetime = datetime.now()
-                if execute_time > current_time:
-                    scheduler.add_job(
-                        id=task_id,
-                        name=task_name,
-                        func=method,
-                        trigger=DateTrigger(run_date=execute_time),
-                        args=[],
-                    )
-            elif "cron" == type:
-                job_args = Scheduler.parse_cron_expression(task.get("cron"))
-                scheduler.add_job(
-                    id=task_id,
-                    name=task_name,
-                    func=method,
-                    trigger=CronTrigger(**job_args),
-                    args=[],
-                )
-            elif "interval" == type:
-                scheduler.add_job(
-                    id=task_id,
-                    name=task_name,
-                    func=method,
-                    trigger=IntervalTrigger(seconds=task.get("seconds")),
-                    args=[],
-                )
+            Scheduler.add(task)
 
         scheduler.start()
 
