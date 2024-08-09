@@ -10,6 +10,7 @@ from fastapi import FastAPI
 
 class Scheduler:
     scheduler: AsyncIOScheduler = None
+    second:int = 5
 
     @staticmethod
     def getInstance() -> AsyncIOScheduler:
@@ -36,6 +37,7 @@ class Scheduler:
                     name=task_name,
                     func=method,
                     trigger=DateTrigger(run_date=execute_time),
+                    replace_existing=True,
                     args=[],
                 )
         elif "cron" == type:
@@ -45,6 +47,7 @@ class Scheduler:
                 name=task_name,
                 func=method,
                 trigger=CronTrigger(**job_args),
+                replace_existing=True,
                 args=[],
             )
         elif "interval" == type:
@@ -53,17 +56,26 @@ class Scheduler:
                 name=task_name,
                 func=method,
                 trigger=IntervalTrigger(seconds=task.get("seconds")),
+                replace_existing=True,
                 args=[],
             )
-
-    async def startup() -> None:
-        scheduler = Scheduler.getInstance()
-        # 获取数据库任务
+    async def getTask():
+         # 获取数据库任务
         tasks = await TaskInfo.where(status='0').getList()
         for task in tasks:
             Scheduler.add(task)
-
+            task['status'] = '1'
+        await TaskInfo.update(tasks)    
+    async def startup() -> None:
+        scheduler = Scheduler.getInstance()
         scheduler.start()
+
+        Scheduler.scheduler.add_job(
+                id="-1",
+                name="默认任务",
+                func= Scheduler.getTask,
+                trigger=IntervalTrigger(seconds=Scheduler.second)
+            )
 
     async def shutdown():
         Scheduler.scheduler.shutdown()
