@@ -5,7 +5,7 @@ from laorm import FieldDescriptor, table
 class TaskInfo:
     """
     id \n
-    task_name 任务名 \n
+    task_name  \n
     type 任务类型 \n
     cron
     execute_time
@@ -19,7 +19,7 @@ class TaskInfo:
     """
 
     id: str = FieldDescriptor(primary=True)
-    task_name: str = FieldDescriptor()
+    task_name: str = FieldDescriptor('任务名')
     type: str = FieldDescriptor()
     cron: str = FieldDescriptor()
     execute_time: str = FieldDescriptor()

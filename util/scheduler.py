@@ -61,10 +61,10 @@ class Scheduler:
             )
     async def getTask():
          # 获取数据库任务
-        tasks = await TaskInfo.where(status=0).getList()
+        tasks:list[TaskInfo] = await TaskInfo.where(status=0).getList()
         for task in tasks:
             Scheduler.add(task)
-            task['status'] = 1
+            task.status = 1
         await TaskInfo.update(tasks)    
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
