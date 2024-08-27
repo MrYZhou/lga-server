@@ -27,7 +27,7 @@ class Scheduler:
         task_id = task.get("id")
         task_name = task.get("task_name")
         content = task.get("content")
-        method =  Scheduler.create_function_from_string(content) 
+        method =  Scheduler.create_function_from_string(content)
         if "date" == type:
             execute_time: datetime = task.get("execute_time")
             current_time: datetime = datetime.now()
@@ -59,20 +59,23 @@ class Scheduler:
                 replace_existing=True,
                 args=[],
             )
+    @staticmethod
     async def getTask():
          # 获取数据库任务
         tasks:list[TaskInfo] = await TaskInfo.where(status=0).getList()
+        if not  tasks:
+            return
         for task in tasks:
             Scheduler.add(task)
             task.status = 1
-        await TaskInfo.update(tasks)    
+        await TaskInfo.update(tasks)
+    @staticmethod
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
         scheduler.start()
 
         Scheduler.scheduler.add_job(
-                id="-1",
-                name="默认任务",
+            name="默认任务",
                 func= Scheduler.getTask,
                 trigger=IntervalTrigger(seconds=Scheduler.second)
             )
