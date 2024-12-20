@@ -1,6 +1,7 @@
 import functools
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
+
 from util.response import AppResult
 
 
@@ -11,7 +12,7 @@ def exception(f):
         except CustomException:
             return AppResult.fail("遇到错误")
         except Exception as e:
-            return AppResult.fail("遇到错误:" + e.args[0])
+            return AppResult.fail("遇到错误:" + e.__doc__)
 
     return functools.update_wrapper(wrapper, f)
 
@@ -21,6 +22,7 @@ class CustomException(Exception):
         self.status_code = status_code
         self.detail = detail
 
+    # 异常处理器
     async def custom_exception_middleware(request: Request, call_next):
         try:
             response = await call_next(request)

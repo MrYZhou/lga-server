@@ -8,7 +8,7 @@ params = [
     "--hidden-import=nanoid",
     # 额外目录纳入打包
     "--add-data=util;util",
-    "--add-data=server;server",
+    "--add-data=router;router",
     "--add-data=tasks;tasks",
     # 指定输出目录
     "--distpath=build",
