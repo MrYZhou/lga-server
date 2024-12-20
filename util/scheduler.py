@@ -80,7 +80,7 @@ class Scheduler:
                 trigger=IntervalTrigger(seconds=Scheduler.second)
             )
 
-    async def shutdown():
+    async def shutdown(self):
         Scheduler.scheduler.shutdown()
 
     def create_function_from_string(func_str):
