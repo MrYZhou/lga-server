@@ -93,6 +93,11 @@ class Env:
         Env.app = app
         return app
 
+    @staticmethod
+    def start():
+        import uvicorn
+        uvicorn.run(Env.app, host="0.0.0.0", reload=False, port=8888, workers=1)
+
     def getPath(rootPath, *path):
         # 用户目录
         path = os.path.join(rootPath, *path)
