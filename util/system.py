@@ -8,6 +8,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from walrus import RateLimitException
+
+from util.auth import AuthenticationMiddleware
 from util.response import AppResult
 from util.PPAFastAPI import PPAFastAPI
 from util.scheduler import Scheduler
@@ -62,6 +64,10 @@ class Env:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
+        # 添加认证中间件
+        if os.getenv('authCheck'):
+            app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
         PPAFastAPI.init(app)
