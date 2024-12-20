@@ -1,7 +1,8 @@
 import asyncio
 import time
 from typing import List
-from fastapi import APIRouter, Header, Body
+
+from fastapi import APIRouter, Request,Header, Body
 from fastapi.responses import (
     RedirectResponse,
     FileResponse,
@@ -11,7 +12,7 @@ from util.base import Common
 from laorm.stream import FieldDescriptor, sql, table
 from laorm.PPA import PPA
 
-
+from walrus import Database as RedisDatabase
 from util.exception import exception
 
 from util.response import AppResult
@@ -21,6 +22,9 @@ class Page:
     page: int = 1
     size: int = 20
 
+db = RedisDatabase(host="localhost", port=6379)
+
+rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 router = APIRouter(
     prefix="/example",
@@ -223,3 +227,8 @@ def avator():
 @router.get("/redirect")
 async def redirect(id):
     return RedirectResponse("/html", status_code=302)
+# 限流
+@router.get("/com")
+@rate.rate_limited(lambda request: request.client.host)
+def com(request: Request):
+    return {"code": 200, "msg": "success"}

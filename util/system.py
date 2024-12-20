@@ -4,11 +4,11 @@ from pathlib import Path
 import sys
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
-
+from walrus import RateLimitException
+from util.response import AppResult
 from util.PPAFastAPI import PPAFastAPI
 from util.scheduler import Scheduler
 
@@ -45,6 +45,15 @@ class Env:
         origins = [
             "http://localhost",
         ]
+        # 限流处理器
+        @app.exception_handler(RateLimitException)
+        async def handle(request: Request, exc: RateLimitException):
+            msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
+            return AppResult.fail(412, msg)
+
+        @app.exception_handler(HTTPException)
+        async def handle2(request: Request, exc: HTTPException):
+            return AppResult.fail(exc.status_code, exc.detail)
 
         app.add_middleware(
             CORSMiddleware,
