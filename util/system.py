@@ -15,19 +15,24 @@ from util.scheduler import Scheduler
 
 class Env:
     app: FastAPI
+    # 项目当前位置
     rootPath: str
+    # 应用名称
     AppName: str = "lga"
+    home_dir: str
+    log_path: str
+    log_config: dict
 
     def initRouter(app: FastAPI):
-        # 解析规则:server模块下面的带controller字符的文件 (文件夹下特定文件)
-        for path in Path(Env.rootPath + "/server").rglob(
+        # 解析规则:router模块下面的带controller字符的文件 (文件夹下特定文件)
+        for path in Path(Env.rootPath + "/router").rglob(
             "*.py"
         ):  # 使用pathlib更方便地遍历文件
             if "controller" in path.name.lower():
                 module_name = path.stem  # 不包含扩展名的文件名
                 try:
                     # 动态导入模块
-                    full_module_name = f"server.{path.parent.name}.{module_name}"
+                    full_module_name = f"router.{path.parent.name}.{module_name}"
                     module = importlib.import_module(full_module_name)
                     # 添加路由
                     if hasattr(module, "router"):
@@ -63,14 +68,7 @@ class Env:
         Scheduler.init(app)
 
     def init(self) -> FastAPI:
-        if getattr(sys, "frozen", False):
-            Env.rootPath = os.path.join(sys._MEIPASS)
-        else:
-            Env.rootPath = os.path.join(os.getcwd())
-        # 文件生成
-        Env.createFile(Env.rootPath, ".env")
-        # 加载.env文件属性到环境变量中
-        load_dotenv()
+        Env.initEnv()
         # 是否为打包环境
         if os.getenv("MODE") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
@@ -100,3 +98,44 @@ class Env:
         if not os.path.exists(filePath):
             with open(filePath, mode="w", encoding="utf-8") as file:
                 file.write("")
+
+    def getFilePath(*path):
+        return os.path.join(Env.home_dir, *path)
+    @staticmethod
+    def initEnv():
+        # 加载.env文件属性到环境变量中
+        load_dotenv()
+        if getattr(sys, "frozen", False):
+            Env.rootPath = os.path.join(sys._MEIPASS)
+        else:
+            Env.rootPath = os.path.join(os.getcwd())
+        # 文件生成
+        Env.createFile(Env.rootPath, ".env")
+        Env.home_dir = os.path.join(os.path.expanduser("~"), Env.AppName)
+        Env.log_path = Env.getFilePath("logfile.log")
+        print("资源目录:", Env.home_dir)
+        print("日志文件:", Env.log_path)
+        Env.getPath("resources")
+        Env.log_config = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "standard": {"format": "%(asctime)s - %(levelname)s - %(message)s"},
+            },
+            "handlers": {
+                "file_handler": {
+                    "class": "logging.FileHandler",
+                    "filename": Env.log_path,
+                    "formatter": "standard",
+                },
+                "console_handler": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "standard",
+                },
+            },
+            "root": {
+                "handlers": ["file_handler", "console_handler"],
+                "level": "INFO",
+            },
+        }
