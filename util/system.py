@@ -20,7 +20,7 @@ class Env:
     # 项目当前位置
     rootPath: str
     # 应用名称
-    AppName: str = "lga"
+    AppName: str = "lga-server"
     home_dir: str
     log_path: str
     log_config: dict
@@ -84,19 +84,12 @@ class Env:
     @staticmethod
     def init() -> FastAPI:
         Env.initEnv()
-        # 是否为打包环境
-        if os.getenv("MODE") == "production":
-            app = FastAPI(docs_url=None, redoc_url=None)
-        else:
-            app = FastAPI()
-
-        # 其他初始化
+        app = Env.app
         Env.initDataBase(app)
         Env.initSchedule(app)
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
-        Env.app = app
         return app
 
     @staticmethod
@@ -123,14 +116,21 @@ class Env:
         return os.path.join(Env.home_dir, *path)
     @staticmethod
     def initEnv():
-        # 加载.env文件属性到环境变量中
-        load_dotenv()
+        # 是否为正式环境
+        if os.getenv("MODE") == "production":
+            app = FastAPI(docs_url=None, redoc_url=None)
+        else:
+            app = FastAPI()
+        Env.app = app
+        # 打包可执行文件路径兼容
         if getattr(sys, "frozen", False):
             Env.rootPath = os.path.join(sys._MEIPASS)
         else:
             Env.rootPath = os.path.join(os.getcwd())
         # 文件生成
         Env.createFile(Env.rootPath, ".env")
+        # 加载.env文件属性到环境变量中
+        load_dotenv()
         Env.AppName = os.getenv('AppName')
         Env.home_dir = os.path.join(os.path.expanduser("~"), Env.AppName)
         Env.log_path = Env.getFilePath("logfile.log")
