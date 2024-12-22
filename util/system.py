@@ -24,6 +24,17 @@ class Env:
     home_dir: str
     log_path: str
     log_config: dict
+    
+    @staticmethod
+    def init() -> FastAPI:
+        Env.initEnv()
+        app = Env.app
+        Env.initDataBase(app)
+        Env.initSchedule(app)
+        Env.initHttp(app)
+        Env.initRouter(app)
+        Env.initStaticDir(app)
+        return app
 
     def initRouter(app: FastAPI):
         # 解析规则:router模块下面的带controller字符的文件 (文件夹下特定文件)
@@ -76,21 +87,11 @@ class Env:
     def initStaticDir(app: FastAPI):
 
         Env.getPath(Env.rootPath, "tasks")
-        app.mount("/img", StaticFiles(directory=Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources/img")))
-        app.mount("/template", StaticFiles(directory=Env.getPath(os.path.expanduser("~") + "/" + Env.AppName, "resources/template")))
+        app.mount("/img", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/img")))
+        app.mount("/template", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/template")))
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
-    @staticmethod
-    def init() -> FastAPI:
-        Env.initEnv()
-        app = Env.app
-        Env.initDataBase(app)
-        Env.initSchedule(app)
-        Env.initHttp(app)
-        Env.initRouter(app)
-        Env.initStaticDir(app)
-        return app
 
     @staticmethod
     def start():
@@ -132,8 +133,8 @@ class Env:
         # 加载.env文件属性到环境变量中
         load_dotenv()
         Env.AppName = os.getenv('AppName')
-        Env.home_dir = os.path.join(os.path.expanduser("~"), Env.AppName)
-        Env.log_path = Env.getFilePath("logfile.log")
+        Env.home_dir = Env.home_dir if  Env.home_dir else  os.path.join(os.path.expanduser("~"), Env.AppName)
+        Env.log_path = Env.log_path if Env.log_path else Env.getFilePath("logfile.log")
         print("资源目录:", Env.home_dir)
         print("日志文件:", Env.log_path)
         Env.getPath("resources")

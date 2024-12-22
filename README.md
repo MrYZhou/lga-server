@@ -8,7 +8,7 @@
 poetry update
 ```
 
-## 根目录新建.env 文件并配置
+## 根目录.envytemp 文件修改后改名为.env
 
 ```bash
 #应用名称配置

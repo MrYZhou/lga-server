@@ -1,0 +1,16 @@
+#应用名称配置
+AppName = lag-server
+#数据库配置
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=study
+# 是否开启token校验
+authCheck = True
+# 是否正式环境 production ,dev
+MODE = dev
+# 设置日志文件位置
+log_path = 'd:/lga-server/log'
+#资源文件根目录
+home_dir = 'd:/lga-server'

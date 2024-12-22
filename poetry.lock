@@ -518,16 +518,15 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "laorm"
-version = "3.3.0"
+version = "3.5.0"
 description = "A python async orm tool"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "laorm-3.3.0.tar.gz", hash = "sha256:7aaefef1e342acfbddc135b24c7b1621099eb2999ffa7da9355655ad09ffd65a"},
+    {file = "laorm-3.5.0.tar.gz", hash = "sha256:4a12fc848212056b68067807f676f8447ed27ef3a7f085419eed64aac469b143"},
 ]
 
 [package.dependencies]
-aiomysql = "*"
 cryptography = ">=42.0.5,<43.0.0"
 
 [[package]]
@@ -1440,4 +1439,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.14"
-content-hash = "537c6f215577a5a9e999a99bbac55b021218a2f76512dd1e834dea4196f07122"
+content-hash = "3d1bc191666a2ed1fd92b33816226df3ab10f4db508596fe31c203a396d2d760"
