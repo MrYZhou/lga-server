@@ -141,11 +141,11 @@ class Env:
         load_dotenv()
         Env.AppName = os.getenv("AppName")
         Env.home_dir = (
-            Env.home_dir
-            if Env.home_dir
+            os.getenv('home_dir')
+            if os.getenv('home_dir')
             else os.path.join(os.path.expanduser("~"), Env.AppName)
         )
-        Env.log_path = Env.log_path if Env.log_path else Env.getFilePath("logfile.log")
+        Env.log_path = os.getenv('log_path') if os.getenv('log_path') else Env.getFilePath("logfile.log")
         print("资源目录:", Env.home_dir)
         print("日志文件:", Env.log_path)
         Env.getPath("resources")
