@@ -3,6 +3,7 @@
 任务调度服务
 
 ## step:
+
 1.依赖安装
 
 ```bash
@@ -15,7 +16,8 @@ poetry update
 f5
 ```
 
-支持.env文件配置（可选）
+根目录新建.env 文件并配置
+
 ```bash
 #应用名称配置
 lag-server
@@ -29,7 +31,7 @@ DB_NAME=study
 authCheck = True
 ```
 
-## docker部署
+## docker 部署
 
 ```bash
 docker build -t fastweb .
@@ -37,6 +39,7 @@ docker run -d -p 8888:8888  fastweb
 ```
 
 ## 打成可执行文件
+
 ```bash
 python  build.py
 ```

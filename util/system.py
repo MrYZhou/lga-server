@@ -131,6 +131,7 @@ class Env:
             Env.rootPath = os.path.join(os.getcwd())
         # 文件生成
         Env.createFile(Env.rootPath, ".env")
+        Env.AppName = os.getenv('AppName')
         Env.home_dir = os.path.join(os.path.expanduser("~"), Env.AppName)
         Env.log_path = Env.getFilePath("logfile.log")
         print("资源目录:", Env.home_dir)
