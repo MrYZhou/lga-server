@@ -81,8 +81,8 @@ class Env:
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
-
-    def init(self) -> FastAPI:
+    @staticmethod
+    def init() -> FastAPI:
         Env.initEnv()
         # 是否为打包环境
         if os.getenv("MODE") == "production":

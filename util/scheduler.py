@@ -10,7 +10,7 @@ from fastapi import FastAPI
 
 class Scheduler:
     scheduler: AsyncIOScheduler = None
-    second:int = 5
+    second: int = 5
 
     @staticmethod
     def getInstance() -> AsyncIOScheduler:
@@ -22,12 +22,13 @@ class Scheduler:
     def init(app: FastAPI, *args, **kwargs):
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
-    def add(task:TaskInfo):
+
+    def add(task: TaskInfo):
         type = task.type
         task_id = task.id
         task_name = task.task_name
         content = task.content
-        method =  Scheduler.create_function_from_string(content)
+        method = Scheduler.create_function_from_string(content)
         if "date" == type:
             execute_time: datetime = task.execute_time
             current_time: datetime = datetime.now()
@@ -59,16 +60,18 @@ class Scheduler:
                 replace_existing=True,
                 args=[],
             )
+
     @staticmethod
     async def getTask():
-         # 获取数据库任务
-        tasks:list[TaskInfo] = await TaskInfo.where(status=0).getList()
-        if not  tasks:
+        # 获取数据库任务
+        tasks: list[TaskInfo] = await TaskInfo.where(status=0).getList()
+        if not tasks:
             return
         for task in tasks:
             Scheduler.add(task)
             task.status = 1
         await TaskInfo.update(tasks)
+
     @staticmethod
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
@@ -76,11 +79,12 @@ class Scheduler:
 
         Scheduler.scheduler.add_job(
             name="默认任务",
-                func= Scheduler.getTask,
-                trigger=IntervalTrigger(seconds=Scheduler.second)
-            )
+            func=Scheduler.getTask,
+            trigger=IntervalTrigger(seconds=Scheduler.second)
+        )
 
-    async def shutdown(self):
+    @staticmethod
+    async def shutdown():
         Scheduler.scheduler.shutdown()
 
     def create_function_from_string(func_str):
@@ -88,7 +92,7 @@ class Scheduler:
         parsed_func = ast.parse(func_str, mode="exec")
         # 确保字符串中只有一个顶级定义（比如函数定义）
         if len(parsed_func.body) != 1 or not isinstance(
-            parsed_func.body[0], ast.FunctionDef
+                parsed_func.body[0], ast.FunctionDef
         ):
             raise ValueError(
                 "Function string must contain exactly one function definition."
