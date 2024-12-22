@@ -22,7 +22,7 @@ async def add_task(data: TaskInfo):
     data.id = Common.uuid()
     await TaskInfo.post(data)
     task = await TaskInfo.get(data.id)
-     # 启用任务
+    # 启用任务
     Scheduler.add(task)
     return AppResult.success("添加成功")
 

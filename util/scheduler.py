@@ -80,7 +80,7 @@ class Scheduler:
         Scheduler.scheduler.add_job(
             name="默认任务",
             func=Scheduler.getTask,
-            trigger=IntervalTrigger(seconds=Scheduler.second)
+            trigger=IntervalTrigger(seconds=Scheduler.second),
         )
 
     @staticmethod
@@ -92,7 +92,7 @@ class Scheduler:
         parsed_func = ast.parse(func_str, mode="exec")
         # 确保字符串中只有一个顶级定义（比如函数定义）
         if len(parsed_func.body) != 1 or not isinstance(
-                parsed_func.body[0], ast.FunctionDef
+            parsed_func.body[0], ast.FunctionDef
         ):
             raise ValueError(
                 "Function string must contain exactly one function definition."

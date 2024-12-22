@@ -2,7 +2,7 @@ import asyncio
 import time
 from typing import List
 
-from fastapi import APIRouter, Request,Header, Body
+from fastapi import APIRouter, Request, Header, Body
 from fastapi.responses import (
     RedirectResponse,
     FileResponse,
@@ -21,6 +21,7 @@ from util.response import AppResult
 class Page:
     page: int = 1
     size: int = 20
+
 
 db = RedisDatabase(host="localhost", port=6379)
 
@@ -227,6 +228,8 @@ def avator():
 @router.get("/redirect")
 async def redirect(id):
     return RedirectResponse("/html", status_code=302)
+
+
 # 限流
 @router.get("/com")
 @rate.rate_limited(lambda request: request.client.host)

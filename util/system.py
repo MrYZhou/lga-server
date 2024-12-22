@@ -24,7 +24,7 @@ class Env:
     home_dir: str
     log_path: str
     log_config: dict
-    
+
     @staticmethod
     def init() -> FastAPI:
         Env.initEnv()
@@ -58,6 +58,7 @@ class Env:
         origins = [
             "http://localhost",
         ]
+
         # 限流处理器
         @app.exception_handler(RateLimitException)
         async def handle(request: Request, exc: RateLimitException):
@@ -77,7 +78,7 @@ class Env:
         )
 
         # 添加认证中间件
-        if os.getenv('authCheck'):
+        if os.getenv("authCheck"):
             app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
@@ -85,10 +86,14 @@ class Env:
         PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
-
         Env.getPath(Env.rootPath, "tasks")
-        app.mount("/img", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/img")))
-        app.mount("/template", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/template")))
+        app.mount(
+            "/img", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/img"))
+        )
+        app.mount(
+            "/template",
+            StaticFiles(directory=Env.getPath(Env.home_dir, "resources/template")),
+        )
 
     def initSchedule(app: FastAPI):
         Scheduler.init(app)
@@ -96,6 +101,7 @@ class Env:
     @staticmethod
     def start():
         import uvicorn
+
         uvicorn.run(Env.app, host="0.0.0.0", reload=False, port=8888, workers=1)
 
     def getPath(rootPath, *path):
@@ -115,6 +121,7 @@ class Env:
 
     def getFilePath(*path):
         return os.path.join(Env.home_dir, *path)
+
     @staticmethod
     def initEnv():
         # 是否为正式环境
@@ -132,8 +139,12 @@ class Env:
         Env.createFile(Env.rootPath, ".env")
         # 加载.env文件属性到环境变量中
         load_dotenv()
-        Env.AppName = os.getenv('AppName')
-        Env.home_dir = Env.home_dir if  Env.home_dir else  os.path.join(os.path.expanduser("~"), Env.AppName)
+        Env.AppName = os.getenv("AppName")
+        Env.home_dir = (
+            Env.home_dir
+            if Env.home_dir
+            else os.path.join(os.path.expanduser("~"), Env.AppName)
+        )
         Env.log_path = Env.log_path if Env.log_path else Env.getFilePath("logfile.log")
         print("资源目录:", Env.home_dir)
         print("日志文件:", Env.log_path)

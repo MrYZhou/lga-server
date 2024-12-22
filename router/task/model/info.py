@@ -19,7 +19,7 @@ class TaskInfo:
     """
 
     id: str = FieldDescriptor(primary=True)
-    task_name: str = FieldDescriptor('任务名')
+    task_name: str = FieldDescriptor("任务名")
     type: str = FieldDescriptor()
     cron: str = FieldDescriptor()
     execute_time: str = FieldDescriptor()
