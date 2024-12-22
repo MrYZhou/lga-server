@@ -2,21 +2,13 @@
 
 任务调度服务
 
-## step:
-
-1.依赖安装
+## 依赖安装
 
 ```bash
 poetry update
 ```
 
-2.启动服务(vscode)
-
-```bash
-f5
-```
-
-根目录新建.env 文件并配置
+## 根目录新建.env 文件并配置
 
 ```bash
 #应用名称配置
@@ -29,6 +21,20 @@ DB_PASSWORD=root
 DB_NAME=study
 # 是否开启token校验
 authCheck = True
+```
+
+## 新建数据库 study,并执行放在根目录的 init.sql 脚本
+
+## 启动服务(vscode)
+
+```bash
+f5
+```
+
+## 启动服务(idea)
+
+```bash
+点到main.py文件然后点运行按钮
 ```
 
 ## docker 部署
