@@ -81,8 +81,8 @@ class Scheduler:
             module = importlib.import_module("tasks." + file)
 
         if hasattr(module, "main"):
-            Scheduler.addTask(type=module.Env.type,
-            task_name=module.Env.task_name,
+            Scheduler.addTask(type=module.Config.type,
+            task_name=module.Config.task_name,
             task_id="tasks." + file,
             method=module.main)
     @staticmethod
