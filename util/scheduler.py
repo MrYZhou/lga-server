@@ -6,7 +6,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from router.task.model.info import TaskInfo
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
-
+import os,importlib
 
 class Scheduler:
     scheduler: AsyncIOScheduler = None
@@ -22,13 +22,7 @@ class Scheduler:
     def init(app: FastAPI, *args, **kwargs):
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
-
-    def add(task: TaskInfo):
-        type = task.type
-        task_id = task.id
-        task_name = task.task_name
-        content = task.content
-        method = Scheduler.create_function_from_string(content)
+    def addTask(type,task_name,task_id,method,seconds=9):
         if "date" == type:
             execute_time: datetime = task.execute_time
             current_time: datetime = datetime.now()
@@ -56,11 +50,41 @@ class Scheduler:
                 id=task_id,
                 name=task_name,
                 func=method,
-                trigger=IntervalTrigger(seconds=task.seconds),
+                trigger=IntervalTrigger(seconds=seconds),
                 replace_existing=True,
                 args=[],
             )
 
+    def add(task: TaskInfo):
+        type = task.type
+        task_id = task.id
+        task_name = task.task_name
+        content = task.content
+        method = Scheduler.create_function_from_string(content)
+
+        Scheduler.addTask(type,task_name,task_id,method)
+    @staticmethod
+    async def initTask():
+        # 获取tasks文件夹下的任务
+        base_path = os.path.join(os.getcwd(), "tasks")
+        # 获取当前目录下所有非目录项（即文件）
+        files_in_current_dir = [
+            f
+            for f in os.listdir(base_path)
+            if os.path.isfile(os.path.join(base_path, f))
+        ]
+
+        for file in files_in_current_dir:
+            file = file.replace(".py", "")
+            if file in ["__init__", ".pyc"]:
+                continue
+            module = importlib.import_module("tasks." + file)
+
+        if hasattr(module, "main"):
+            Scheduler.addTask(type=module.Env.type,
+            task_name=module.Env.task_name,
+            task_id="tasks." + file,
+            method=module.main)
     @staticmethod
     async def getTask():
         # 获取数据库任务
@@ -72,16 +96,19 @@ class Scheduler:
             task.status = 1
         await TaskInfo.update(tasks)
 
+        
     @staticmethod
     async def startup() -> None:
         scheduler = Scheduler.getInstance()
         scheduler.start()
 
-        Scheduler.scheduler.add_job(
-            name="默认任务",
-            func=Scheduler.getTask,
-            trigger=IntervalTrigger(seconds=Scheduler.second),
-        )
+        # Scheduler.scheduler.add_job(
+        #     name="默认任务",
+        #     func=Scheduler.getTask,
+        #     trigger=IntervalTrigger(seconds=Scheduler.second),
+        # )
+
+        await Scheduler.initTask()
 
     @staticmethod
     async def shutdown():
