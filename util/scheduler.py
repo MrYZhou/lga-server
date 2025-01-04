@@ -84,7 +84,7 @@ class Scheduler:
             Scheduler.addTask(type=module.Config.type,
             task_name=module.Config.task_name,
             task_id="tasks." + file,
-            method=module.main,seconds=module.Env.seconds)
+            method=module.main,seconds=module.Config.seconds)
     @staticmethod
     async def getTask():
         # 获取数据库任务

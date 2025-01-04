@@ -167,6 +167,7 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 tasks/*.py
+poetry.lock
 
 # 例外规则
 !tasks/hello.py

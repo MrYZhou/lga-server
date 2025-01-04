@@ -139,7 +139,7 @@ class Env:
         Env.createFile(Env.rootPath, ".env")
         # 加载.env文件属性到环境变量中
         load_dotenv()
-        Env.AppName = os.getenv("AppName")
+        Env.AppName = os.getenv("AppName") if os.getenv("AppName") else 'lga-app'
         Env.home_dir = (
             os.getenv('home_dir')
             if os.getenv('home_dir')
