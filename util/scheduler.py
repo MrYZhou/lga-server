@@ -22,7 +22,7 @@ class Scheduler:
     def init(app: FastAPI, *args, **kwargs):
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
-    def addTask(type,task_name,task_id,method,seconds=9,cron='',execute_time: datetime=None):
+    def addTask(type,task_name,task_id,method,seconds,cron,execute_time: datetime=None):
         if "date" == type:
             current_time: datetime = datetime.now()
             if execute_time > current_time:
@@ -78,9 +78,10 @@ class Scheduler:
                 Scheduler.addTask(type=module.Config.type,
                 task_name=module.Config.task_name,
                 task_id="tasks." + file,
-                method=module.main,seconds=module.Config.seconds,
-                cron=module.Config.cron,
-                execute_time=module.Config.execute_time
+                method=module.main,
+                seconds=module.Config.seconds if hasattr(module.Config, "seconds") else None,
+                cron=module.Config.cron if hasattr(module.Config, "cron") else None,
+                execute_time=module.Config.execute_time if hasattr(module.Config, "execute_time") else None
                 )
     @staticmethod
     async def getTask():
@@ -99,11 +100,7 @@ class Scheduler:
         scheduler = Scheduler.getInstance()
         scheduler.start()
 
-        Scheduler.scheduler.add_job(
-            name="本地任务",
-            func=Scheduler.initTask,
-            trigger=IntervalTrigger(seconds=Scheduler.second),
-        )
+        await Scheduler.initTask()
 
 
     @staticmethod
