@@ -170,4 +170,4 @@ tasks/*.py
 poetry.lock
 
 # 例外规则
-!tasks/hello.py
+!tasks/hello*.py
