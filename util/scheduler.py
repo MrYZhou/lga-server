@@ -80,11 +80,11 @@ class Scheduler:
                 continue
             module = importlib.import_module("tasks." + file)
 
-        if hasattr(module, "main"):
-            Scheduler.addTask(type=module.Config.type,
-            task_name=module.Config.task_name,
-            task_id="tasks." + file,
-            method=module.main,seconds=module.Config.seconds)
+            if hasattr(module, "main"):
+                Scheduler.addTask(type=module.Config.type,
+                task_name=module.Config.task_name,
+                task_id="tasks." + file,
+                method=module.main,seconds=module.Config.seconds)
     @staticmethod
     async def getTask():
         # 获取数据库任务
