@@ -22,9 +22,8 @@ class Scheduler:
     def init(app: FastAPI, *args, **kwargs):
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
-    def addTask(type,task_name,task_id,method,seconds=9):
+    def addTask(type,task_name,task_id,method,seconds=9,cron='',execute_time: datetime=None):
         if "date" == type:
-            execute_time: datetime = task.execute_time
             current_time: datetime = datetime.now()
             if execute_time > current_time:
                 Scheduler.scheduler.add_job(
@@ -36,7 +35,7 @@ class Scheduler:
                     args=[],
                 )
         elif "cron" == type:
-            job_args = Scheduler.parse_cron_expression(task.cron)
+            job_args = Scheduler.parse_cron_expression(cron)
             Scheduler.scheduler.add_job(
                 id=task_id,
                 name=task_name,
@@ -56,13 +55,8 @@ class Scheduler:
             )
 
     def add(task: TaskInfo):
-        type = task.type
-        task_id = task.id
-        task_name = task.task_name
-        content = task.content
         method = Scheduler.create_function_from_string(content)
-
-        Scheduler.addTask(type,task_name,task_id,method)
+        Scheduler.addTask(task.type,task.task_name,task.task_id,method,task.cron,task.execute_time)
     @staticmethod
     async def initTask():
         # 获取tasks文件夹下的任务
@@ -84,7 +78,10 @@ class Scheduler:
                 Scheduler.addTask(type=module.Config.type,
                 task_name=module.Config.task_name,
                 task_id="tasks." + file,
-                method=module.main,seconds=module.Config.seconds)
+                method=module.main,seconds=module.Config.seconds,
+                cron=module.Config.cron,
+                execute_time=module.Config.execute_time
+                )
     @staticmethod
     async def getTask():
         # 获取数据库任务
@@ -102,13 +99,12 @@ class Scheduler:
         scheduler = Scheduler.getInstance()
         scheduler.start()
 
-        # Scheduler.scheduler.add_job(
-        #     name="默认任务",
-        #     func=Scheduler.getTask,
-        #     trigger=IntervalTrigger(seconds=Scheduler.second),
-        # )
+        Scheduler.scheduler.add_job(
+            name="本地任务",
+            func=Scheduler.initTask,
+            trigger=IntervalTrigger(seconds=Scheduler.second),
+        )
 
-        await Scheduler.initTask()
 
     @staticmethod
     async def shutdown():
