@@ -9,10 +9,10 @@ url = "https://juejin.cn/user/center/signin?from=main_page"
 def main():
     print('hello')
     # 启动或接管浏览器，并创建标签页对象
-    co = ChromiumOptions()
-    co.set_browser_path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe')
-    co.save()
-    tab = Chromium(9224,co).latest_tab
-    # 跳转到目标页面
-    tab.get(url)
+    # co = ChromiumOptions()
+    # co.set_browser_path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe')
+    # co.save()
+    # tab = Chromium(9224,co).latest_tab
+    # # 跳转到目标页面
+    # tab.get(url)
     
