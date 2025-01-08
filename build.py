@@ -18,7 +18,7 @@ if __name__ == '__main__':
         # 输出的名字
         "-n=lga",
         # 图标
-        "--icon","resources/img/icon.ico",
+        # "--icon","resources/img/icon.ico",
         # 启动文件
         "main.py",
     ]
