@@ -1,18 +1,10 @@
 from DrissionPage import Chromium
 from DrissionPage._configs.chromium_options import ChromiumOptions
-from util.system import  Env
-class Config:
-    type = 'interval'
-    seconds = 5
-    task_name='任务1'
-url = "https://juejin.cn/user/center/signin?from=main_page"
+
+type = 'interval'
+seconds = 5
+task_name='hello'
+
 def main():
     print('hello')
-    # 启动或接管浏览器，并创建标签页对象
-    # co = ChromiumOptions()
-    # co.set_browser_path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe')
-    # co.save()
-    # tab = Chromium(9224,co).latest_tab
-    # # 跳转到目标页面
-    # tab.get(url)
     

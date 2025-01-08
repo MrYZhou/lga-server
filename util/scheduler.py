@@ -1,5 +1,5 @@
 import ast
-from datetime import datetime
+from datetime import datetime,timedelta
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.interval import IntervalTrigger
@@ -23,8 +23,13 @@ class Scheduler:
         app.add_event_handler("startup", Scheduler.startup)
         app.add_event_handler("shutdown", Scheduler.shutdown)
     def addTask(type,task_name,task_id,method,seconds,cron,execute_time: datetime=None):
-        if "date" == type:
+
+        if "date" == type or "delay" == type:
             current_time: datetime = datetime.now()
+            # 延迟任务
+            if "delay" == type:
+                delay = timedelta(seconds=20)
+                execute_time = current_time + delay
             if execute_time > current_time:
                 Scheduler.scheduler.add_job(
                     id=task_id,
@@ -34,6 +39,7 @@ class Scheduler:
                     replace_existing=True,
                     args=[],
                 )
+        # cron表达式        
         elif "cron" == type:
             job_args = Scheduler.parse_cron_expression(cron)
             Scheduler.scheduler.add_job(
@@ -44,6 +50,7 @@ class Scheduler:
                 replace_existing=True,
                 args=[],
             )
+        # 间隔    
         elif "interval" == type:
             Scheduler.scheduler.add_job(
                 id=task_id,
@@ -75,13 +82,14 @@ class Scheduler:
             module = importlib.import_module("tasks." + file)
 
             if hasattr(module, "main"):
-                Scheduler.addTask(type=module.Config.type,
-                task_name=module.Config.task_name,
+                # todo 后续从数据库读取配置信息
+                Scheduler.addTask(type=module.type,
+                task_name=module.task_name,
                 task_id="tasks." + file,
                 method=module.main,
-                seconds=module.Config.seconds if hasattr(module.Config, "seconds") else None,
-                cron=module.Config.cron if hasattr(module.Config, "cron") else None,
-                execute_time=module.Config.execute_time if hasattr(module.Config, "execute_time") else None
+                seconds=module.seconds if hasattr(module, "seconds") else None,
+                cron=module.cron if hasattr(module, "cron") else None,
+                execute_time=module.execute_time if hasattr(module, "execute_time") else None
                 )
     @staticmethod
     async def getTask():
