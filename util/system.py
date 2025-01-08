@@ -11,7 +11,7 @@ from walrus import RateLimitException
 
 from util.auth import AuthenticationMiddleware
 from util.response import AppResult
-from util.PPAFastAPI import PPAFastAPI
+
 from util.scheduler import Scheduler
 
 
