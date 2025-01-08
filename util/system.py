@@ -11,7 +11,7 @@ from walrus import RateLimitException
 
 from util.auth import AuthenticationMiddleware
 from util.response import AppResult
-
+from util.PPAFastAPI import PPAFastAPI
 from util.scheduler import Scheduler
 
 
@@ -82,7 +82,8 @@ class Env:
             app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
-        pass
+        PPAFastAPI.init(app)
+        PPAFastAPI.showSql(True)
 
     def initStaticDir(app: FastAPI):
         Env.getPath(Env.rootPath, "tasks")
