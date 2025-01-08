@@ -19,7 +19,7 @@ schedule = Scheduler.getInstance()
 @exception
 async def add_task(data: TaskInfo):
     # 任务存数据库
-    data.id = Common.uuid()
+    data.id = Common.uid()
     await TaskInfo.post(data)
     task = await TaskInfo.get(data.id)
     # 启用任务

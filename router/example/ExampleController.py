@@ -101,7 +101,7 @@ async def addBatch():
     configlist = []
     for i in range(0, 20000):
         config1 = Config1()
-        config1.id = Common.uuid()
+        config1.id = Common.uid()
         config1.name = Common.randomName()
         config1.age = Common.randomAge()
         configlist.append(config1)
@@ -114,10 +114,10 @@ async def addone():
     await Config1.delete(1)
     await Config1.delete(2)
     config1 = Config1()
-    config1.id = 1
+    config1.id = Common.uid()
     config1.name = 123
     config12 = Config1()
-    config12.id = 2
+    config12.id = Common.uid()
     config12.name = 456
     configlist = [config12]
     await Config1.post(config1)
@@ -139,10 +139,10 @@ async def deleteconfig():
 @router.delete("/config2/deletedy")
 async def deletedy():
     config1 = Config1()
-    config1.id = 1
+    config1.id = Common.uid()
     config1.name = 123
     await Config1.post(config1)
-    await Config1.dynamic("deleteById", 1)
+    await Config1.dynamic("deleteById", config1.id)
     return AppResult.success()
 
 

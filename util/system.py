@@ -78,7 +78,7 @@ class Env:
         )
 
         # 添加认证中间件
-        if os.getenv("AuthCheck"):
+        if os.getenv("AuthCheck") == 'True':
             app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
