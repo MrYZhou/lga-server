@@ -16,7 +16,7 @@ from walrus import Database as RedisDatabase
 from util.exception import exception
 
 from util.response import AppResult
-
+from pydantic import BaseModel
 
 class Page:
     page: int = 1
@@ -49,10 +49,11 @@ class Config1:
         pass
 
 
-@table()
+@table("user")
 class Users:
     id: str = FieldDescriptor(primary=True)
     username: str = FieldDescriptor()
+    password: str = FieldDescriptor()
 
 
 # 读取自定义方法的返回类型
@@ -81,7 +82,7 @@ async def getdy3():
 @router.post("/config2/page")
 async def body(page=Body(Page)):
     data = (
-        await Config1.where(name="邱桂珍").match("age", ">30", "age", "<32").page(page)
+        await Config1.where(age=30).page(page)
     )
     return AppResult.success(data)
 
@@ -90,9 +91,11 @@ async def body(page=Body(Page)):
 @router.get("/config2/get")
 @exception
 async def get_config2():
-    res = await Config1.where(name=22).get()
+    # res = await Config1.where(name=22).get()
     res = await Users.get(407)
-    res = await Config1.where(name=22).getList([1, 2, 3])
+    # res = await Config1.where(age=22).getList()
+    # res.created_at = ''
+    # res.updated_at =''
     return AppResult.success(res)
 
 
