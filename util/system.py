@@ -82,8 +82,7 @@ class Env:
             app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
-        PPAFastAPI.init(app)
-        PPAFastAPI.showSql(True)
+        pass
 
     def initStaticDir(app: FastAPI):
         Env.getPath(Env.rootPath, "tasks")
