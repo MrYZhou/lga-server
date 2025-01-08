@@ -21,8 +21,8 @@ class Env:
     rootPath: str
     # 应用名称
     AppName: str = "lga-server"
-    home_dir: str
-    log_path: str
+    HomeDir: str
+    LogPath: str
     log_config: dict
 
     @staticmethod
@@ -78,7 +78,7 @@ class Env:
         )
 
         # 添加认证中间件
-        if os.getenv("authCheck"):
+        if os.getenv("AuthCheck"):
             app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app: FastAPI):
@@ -88,15 +88,16 @@ class Env:
     def initStaticDir(app: FastAPI):
         Env.getPath(Env.rootPath, "tasks")
         app.mount(
-            "/img", StaticFiles(directory=Env.getPath(Env.home_dir, "resources/img"))
+            "/img", StaticFiles(directory=Env.getPath(Env.HomeDir, "resources/img"))
         )
         app.mount(
             "/template",
-            StaticFiles(directory=Env.getPath(Env.home_dir, "resources/template")),
+            StaticFiles(directory=Env.getPath(Env.HomeDir, "resources/template")),
         )
 
     def initSchedule(app: FastAPI):
-        Scheduler.init(app)
+        if os.getenv('StartTask') == 'True':
+            Scheduler.init(app)
 
     @staticmethod
     def start():
@@ -120,12 +121,12 @@ class Env:
                 file.write("")
 
     def getFilePath(*path):
-        return os.path.join(Env.home_dir, *path)
+        return os.path.join(Env.HomeDir, *path)
 
     @staticmethod
     def initEnv():
         # 是否为正式环境
-        if os.getenv("MODE") == "production":
+        if os.getenv("Mode") == "production":
             app = FastAPI(docs_url=None, redoc_url=None)
         else:
             app = FastAPI()
@@ -140,14 +141,14 @@ class Env:
         # 加载.env文件属性到环境变量中
         load_dotenv()
         Env.AppName = os.getenv("AppName") if os.getenv("AppName") else 'lga-server'
-        Env.home_dir = (
-            os.getenv('home_dir')
-            if os.getenv('home_dir')
+        Env.HomeDir = (
+            os.getenv('HomeDir')
+            if os.getenv('HomeDir')
             else os.path.join(os.path.expanduser("~"), Env.AppName)
         )
-        Env.log_path = os.getenv('log_path') if os.getenv('log_path') else Env.getFilePath("logfile.log")
-        print("资源目录:", Env.home_dir)
-        print("日志文件:", Env.log_path)
+        Env.LogPath = os.getenv('LogPath') if os.getenv('LogPath') else Env.getFilePath("logfile.log")
+        print("资源目录:", Env.HomeDir)
+        print("日志文件:", Env.LogPath)
         Env.getPath("resources")
         Env.log_config = {
             "version": 1,
@@ -158,7 +159,7 @@ class Env:
             "handlers": {
                 "file_handler": {
                     "class": "logging.FileHandler",
-                    "filename": Env.log_path,
+                    "filename": Env.LogPath,
                     "formatter": "standard",
                 },
                 "console_handler": {

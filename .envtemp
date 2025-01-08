@@ -7,10 +7,12 @@ DB_USER=root
 DB_PASSWORD=root
 DB_NAME=study
 # 是否开启token校验True, False
-authCheck = True
+AuthCheck = True
 # 是否正式环境 production ,dev
-MODE = dev
+Mode = dev
 # 设置日志文件位置
-log_path = 'd:/lga-server/log'
+LogPath = 'd:/lga-server/log'
 #资源文件根目录
-home_dir = 'd:/lga-server'
+HomeDir = 'd:/lga-server'
+# 启动任务计划
+StartTask = False

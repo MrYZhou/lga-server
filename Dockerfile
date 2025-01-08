@@ -16,7 +16,7 @@ RUN poetry install --only main
 
 # 声明运行时环境变量,服务的主机地址
 ENV DB_HOST="192.168.1.4"
-ENV MODE="production"
+ENV Mode="production"
 
 # 指定启动命令
 CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888"]

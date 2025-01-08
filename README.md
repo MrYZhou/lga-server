@@ -20,7 +20,7 @@ DB_USER=root
 DB_PASSWORD=root
 DB_NAME=study
 # 是否开启token校验
-authCheck = True
+AuthCheck = True
 ```
 
 ## 新建数据库 study,并执行放在根目录的 init.sql 脚本
