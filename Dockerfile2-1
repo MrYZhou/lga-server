@@ -12,7 +12,7 @@ RUN pip install --upgrade  pip
 
 # 使用Poetry国内源和不创建虚拟环境
 RUN pip install poetry 
-RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://pypi.mirrors.ustc.edu.cn/simple/ 
+RUN poetry config virtualenvs.create false && poetry config repositories.pypi https://mirrors.aliyun.com/pypi/simple 
 # 使用Poetry安装生产依赖项
 RUN poetry update --only main
 
