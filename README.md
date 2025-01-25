@@ -10,19 +10,6 @@ poetry update
 
 ## 根目录.envytemp 文件修改后改名为.env
 
-```bash
-#应用名称配置
-lag-server
-#数据库配置
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=study
-# 是否开启token校验
-AuthCheck = True
-```
-
 ## 新建数据库 study,并执行放在根目录的 init.sql 脚本
 
 ## 启动服务(vscode)
@@ -46,7 +33,7 @@ docker build -t base -f Dockerfile2-1 .
 docker build -t fastweb -f Dockerfile2-1 .
 ```
 
-运行
+## 运行
 
 ```bash
 docker run --env-file ./.env -d -p 8888:8888  fastweb
