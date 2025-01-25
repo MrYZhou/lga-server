@@ -41,8 +41,17 @@ f5
 
 ```bash
 docker build -t fastweb .
+或者
+docker build -t base -f docekrfile2-1 .
+docker build -t fastweb -f docekrfile2-1 .
+```
+
+运行
+
+```bash
 docker run --env-file ./.env -d -p 8888:8888  fastweb
 ```
+
 
 ## 打成可执行文件
 
