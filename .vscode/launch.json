@@ -9,7 +9,18 @@
       "type": "debugpy", // 使用 VS Code 推荐的 Python 调试器
       "request": "launch", // 启动新进程（而非附加到现有进程）
       "module": "uvicorn", // 指定通过 uvicorn 模块启动应用
-      "args": ["main:app", "--reload", "--port", "8888"], // 启动参数
+      "args": ["main:app", "--reload", "--port", "8888",], // 启动参数
+      "justMyCode": false, // 允许调试第三方库代码
+      "env": {
+        "PYDEVD_DISABLE_FILE_VALIDATION": "1" // 禁用冻结模块检测（解决某些环境报错）
+      }
+    },
+    {
+      "name": "lga2", // 调试器名称
+      "type": "debugpy", // 使用 VS Code 推荐的 Python 调试器
+      "request": "launch", // 启动新进程（而非附加到现有进程）
+      "module": "granian", // 指定通过 granian 模块启动应用
+      "args": ["main:app", "--interface", "asgi", "--reload", "--port", "8888","--access-log"], // 启动参数
       "justMyCode": false, // 允许调试第三方库代码
       "env": {
         "PYDEVD_DISABLE_FILE_VALIDATION": "1" // 禁用冻结模块检测（解决某些环境报错）
