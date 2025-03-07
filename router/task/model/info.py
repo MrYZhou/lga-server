@@ -1,4 +1,4 @@
-from laorm import FieldDescriptor, table
+from laorm import Field, table
 
 
 @table("task")
@@ -18,15 +18,15 @@ class TaskInfo:
     uid
     """
 
-    id: str = FieldDescriptor(primary=True)
-    task_name: str = FieldDescriptor("任务名")
-    type: str = FieldDescriptor()
-    cron: str = FieldDescriptor()
-    execute_time: str = FieldDescriptor()
-    content: str = FieldDescriptor()
-    description: str = FieldDescriptor()
-    seconds: int = FieldDescriptor()
-    run_count: str = FieldDescriptor()
-    last_run_times: int = FieldDescriptor()
-    status: str = FieldDescriptor()
-    uid: str = FieldDescriptor()
+    id: str = Field(primary=True)
+    task_name: str = Field("任务名")
+    type: str = Field()
+    cron: str = Field()
+    execute_time: str = Field()
+    content: str = Field()
+    description: str = Field()
+    seconds: int = Field()
+    run_count: str = Field()
+    last_run_times: int = Field()
+    status: str = Field()
+    uid: str = Field()

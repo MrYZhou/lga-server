@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, HTTPException, status
-from laorm import FieldDescriptor, table
+from laorm import Field, table
 from util.response import AppResult
 from util.auth import create_access_token, UserContext
 from util.redis import redisTool
@@ -13,9 +13,9 @@ router = APIRouter(
 
 @table()
 class Users:
-    id: str = FieldDescriptor(primary=True)
-    username: str = FieldDescriptor()
-    password: str = FieldDescriptor()
+    id: str = Field(primary=True)
+    username: str = Field()
+    password: str = Field()
 
 
 @router.post("/login")
