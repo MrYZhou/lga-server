@@ -1,18 +1,19 @@
-#应用名称配置
+# env文件修改需要重启,没办法热更新
+# 应用名称配置
 AppName= lag-server
-#数据库配置
+# 数据库配置
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=root
 DB_NAME=study
-# 是否开启token校验True, False
+# 是否开启token校验 True / False
 AuthCheck = True
 # 是否正式环境 production ,dev
 Mode= dev
 # 设置日志文件位置
 LogPath= d:/lga-server/log
-#资源文件根目录
+# 资源文件根目录,本地开发建议当前项目resources,线上环境在更换
 HomeDir= d:/lga-server
-# 启动任务计划
+# 启动任务计划 True / False
 StartTask = False
