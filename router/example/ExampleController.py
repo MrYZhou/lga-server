@@ -9,7 +9,7 @@ from fastapi.responses import (
 )
 from util.base import Common
 
-from laorm.stream import FieldDescriptor, sql, table
+from laorm.stream import Field, sql, table
 from laorm.PPA import PPA
 
 from walrus import Database as RedisDatabase
@@ -36,9 +36,9 @@ router = APIRouter(
 
 @table("config")
 class Config1:
-    id: str = FieldDescriptor(primary=True)
-    name: str = FieldDescriptor()
-    age: int = FieldDescriptor()
+    id: str = Field(primary=True)
+    name: str = Field()
+    age: int = Field()
 
     @sql
     def selectByName(name: str) -> list["Config1"]:
@@ -51,9 +51,9 @@ class Config1:
 
 @table("user")
 class Users:
-    id: str = FieldDescriptor(primary=True)
-    username: str = FieldDescriptor()
-    password: str = FieldDescriptor()
+    id: str = Field(primary=True)
+    username: str = Field()
+    password: str = Field()
 
 
 # 读取自定义方法的返回类型
