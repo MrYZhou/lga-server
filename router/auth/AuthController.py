@@ -20,7 +20,7 @@ class Users:
 
 @router.post("/login")
 async def login(data: Users = Body(Users)):
-    # 1.获取yo
+    # 1.获取用户
     user = await Users.where(username=data.username).get()
     # 2.校验密码
     if user is None or user["password"] != data.password:
