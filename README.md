@@ -43,6 +43,4 @@ docker run --env-file ./.env -d -p 8888:8888  fastweb
 
 ```bash
 python  build.py
-或
-nuitka --standalone --onefile --windows-disable-console  main.py
 ```

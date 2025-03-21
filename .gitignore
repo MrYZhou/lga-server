@@ -168,6 +168,7 @@ pnpm-lock.yaml
 package-lock.json
 tasks/*.py
 poetry.lock
-
+*.exe
+*dist
 # 例外规则
 !tasks/hello*.py
