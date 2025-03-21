@@ -8,9 +8,9 @@
 poetry install
 ```
 
-## 根目录.envytemp 文件修改后改名为.env
+## config 目录下 .envytemp 文件修改后改名为.env
 
-## 新建数据库 study,并执行放在根目录的 init.sql 脚本
+## 新建数据库 study,并执行放在 config 目录的 init.sql 脚本
 
 ## 启动服务(vscode)
 
@@ -29,8 +29,8 @@ f5
 ```bash
 docker build -t fastweb .
 或者
-docker build -t base -f Dockerfile2-1 .
-docker build -t fastweb -f Dockerfile2-1 .
+docker build -t base -f Dockerfile2-1 ./build/docker
+docker build -t fastweb -f Dockerfile2-1 ./build/docker
 ```
 
 ## 运行
