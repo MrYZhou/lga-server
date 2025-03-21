@@ -5,7 +5,7 @@
 ## 依赖安装
 
 ```bash
-poetry update
+poetry install
 ```
 
 ## 根目录.envytemp 文件修改后改名为.env
@@ -43,4 +43,6 @@ docker run --env-file ./.env -d -p 8888:8888  fastweb
 
 ```bash
 python  build.py
+或
+nuitka --standalone --onefile --windows-disable-console  main.py
 ```
